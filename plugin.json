@@ -1,0 +1,8 @@
+{
+    "name": "Live scripting tool",
+    "author": "Daid",
+    "version": "1.0.0",
+    "description": "Provides an edit window for direct script editing.",
+    "api": 4,
+    "i18n-catalog": "uranium"
+}
