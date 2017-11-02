@@ -25,6 +25,12 @@ Item
             onTextChanged: {
                 UM.ActiveTool.setProperty("Script", text)
             }
+            Keys.onPressed: {
+                if (event.key == Qt.Key_Tab) {
+                    insert(cursorPosition, "    ");
+                    event.accepted = true;
+                }
+            }
         }
         TextArea {
             id: result

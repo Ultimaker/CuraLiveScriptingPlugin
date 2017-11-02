@@ -3,6 +3,8 @@ from UM.Logger import Logger
 import time
 import threading
 import traceback
+from UM.Application import Application
+from UM.Resources import Resources
 
 
 class LiveScripting(Tool):
@@ -14,7 +16,19 @@ class LiveScripting(Tool):
         self.__thread = None
         self.__trigger = False
 
+        try:
+            with open(Resources.getStoragePath(Resources.Preferences, "live_script.py"), "rt") as f:
+                self.__script = f.read()
+        except FileNotFoundError:
+            pass
+
         self.setExposedProperties("Script", "Result")
+        
+        Application.getInstance().aboutToQuit.connect(self.__onQuit)
+
+    def __onQuit(self):
+        with open(Resources.getStoragePath(Resources.Preferences, "live_script.py"), "wt") as f:
+            f.write(self.__script)
 
     def getScript(self):
         return self.__script
@@ -44,8 +58,10 @@ class LiveScripting(Tool):
             self.__output = ""
             self.setResult(self.__output)
             try:
-                exec(self.__script, {'print': self.__print})
-            except Exception as e:
+                exec(self.__script, {'print': self.__print, 'exit': self.__exit})
+            except KeyboardInterrupt:
+                pass
+            except BaseException as e:
                 self.__output += traceback.format_exc()
             self.setResult(self.__output)
         self.__thread = None
@@ -53,3 +69,8 @@ class LiveScripting(Tool):
     def __print(self, *args):
         self.__output += " ".join(map(str, args)) + "\n"
         self.setResult(self.__output)
+
+    def __exit(self, *args):
+        if args:
+            self.__print("Exit:", *args)
+        raise KeyboardInterrupt
