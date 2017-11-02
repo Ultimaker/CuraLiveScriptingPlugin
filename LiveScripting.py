@@ -40,7 +40,8 @@ class LiveScripting(Tool):
             
             self.__trigger = True
             if self.__thread is None:
-                self.__thread = threading.Thread(target=self.__backgroundJob, daemon=True).start()
+                self.__thread = threading.Thread(target=self.__backgroundJob, daemon=True)
+                self.__thread.start()
 
     def getResult(self):
         return self.__result
