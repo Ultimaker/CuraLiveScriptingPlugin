@@ -32,6 +32,21 @@ Item
                 }
             }
         }
+        Row {
+            CheckBox {
+                text: "Auto run"
+                checked: UM.ActiveTool.properties.getValue("AutoRun")
+                onClicked: {
+                    UM.ActiveTool.setProperty("AutoRun", checked)
+                }
+            }
+            Button {
+                text: "Run"
+                onClicked: {
+                    UM.ActiveTool.triggerAction("runScript")
+                }
+            }
+        }
         TextArea {
             id: result
             width: viewportOverlay.width - x - 100

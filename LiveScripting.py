@@ -15,6 +15,7 @@ class LiveScripting(Tool):
         self.__result = ""
         self.__thread = None
         self.__trigger = False
+        self.__auto_run = True
 
         try:
             with open(Resources.getStoragePath(Resources.Preferences, "live_script.py"), "rt") as f:
@@ -22,7 +23,7 @@ class LiveScripting(Tool):
         except FileNotFoundError:
             pass
 
-        self.setExposedProperties("Script", "Result")
+        self.setExposedProperties("Script", "Result", "AutoRun")
         
         Application.getInstance().aboutToQuit.connect(self.__onQuit)
 
@@ -38,10 +39,14 @@ class LiveScripting(Tool):
             self.__script = value
             self.propertyChanged.emit()
             
-            self.__trigger = True
-            if self.__thread is None:
-                self.__thread = threading.Thread(target=self.__backgroundJob, daemon=True)
-                self.__thread.start()
+            if self.__auto_run:
+                self.runScript()
+
+    def runScript(self):
+        self.__trigger = True
+        if self.__thread is None:
+            self.__thread = threading.Thread(target=self.__backgroundJob, daemon=True)
+            self.__thread.start()
 
     def getResult(self):
         return self.__result
@@ -49,6 +54,14 @@ class LiveScripting(Tool):
     def setResult(self, value):
         if value != self.__result:
             self.__result = value
+            self.propertyChanged.emit()
+
+    def getAutoRun(self):
+        return self.__auto_run
+
+    def setAutoRun(self, value):
+        if value != self.__auto_run:
+            self.__auto_run = value
             self.propertyChanged.emit()
 
     def __backgroundJob(self):
