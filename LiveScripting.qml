@@ -10,8 +10,8 @@ Item
 {
     id: base
     // TODO: these widths & heights are a bit too dependant on other objects in the qml...
-    width: viewportOverlay.width - x - 50 - toolbar.width
-    height: viewportOverlay.height - y - 50 - topbar.height
+    width: 500
+    height: 500
     TextArea {
         id: inputfg
         width: parent.width
