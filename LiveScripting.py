@@ -18,7 +18,7 @@ class LiveScripting(Tool):
         self.__auto_run = True
 
         try:
-            with open(Resources.getStoragePath(Resources.Preferences, "live_script.py"), "rt") as f:
+            with open(Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py"), "rt") as f:
                 self.__script = f.read()
         except FileNotFoundError:
             pass
@@ -28,7 +28,7 @@ class LiveScripting(Tool):
         Application.getInstance().aboutToQuit.connect(self.__onQuit)
 
     def __onQuit(self):
-        with open(Resources.getStoragePath(Resources.Preferences, "live_script.py"), "wt") as f:
+        with open(Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py"), "wt") as f:
             f.write(self.__script)
 
     def getScript(self):
