@@ -5,17 +5,16 @@ from cura.CuraApplication import CuraApplication
 from UM.Settings.SettingInstance import SettingInstance
 from UM.Resources import Resources
 
-NAme=Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py")
+name = Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py")
 
-Message(text = "jobName : %s\n" % NAme).show()
+Message(text = "Script location: %s\n" % name).show()
 
 print_information = CuraApplication.getInstance().getPrintInformation()
 
-Message(text = "jobName : %s\n" % print_information.jobName).show()
+Message(text = "jobName: %s\n" % print_information.jobName).show()
 
-id_ex=0
 global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
-extruder = global_container_stack.extruderList[int(id_ex)]
+extruder = global_container_stack.extruderList[0]
 
 xy_distance = extruder.getProperty("support_xy_distance", "value")
 
