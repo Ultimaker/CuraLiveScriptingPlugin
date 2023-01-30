@@ -156,7 +156,8 @@ class LiveScripting(Tool):
         return self.__script
 
     def setScript(self, value: str) -> None:
-        if value != self.__script:
+        Logger.log("w", "The New Script {}".format(value))
+        if str(value) != str(self.__script):
             self.__script = str(value)
             self.propertyChanged.emit()
             
