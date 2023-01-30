@@ -1,12 +1,48 @@
+#-----------------------------------------------------------------------------------
+# Part of the initial source code for primitive Shape (c) 2018 fieldOfView
+#
+# The CalibrationShapes plugin is released under the terms of the AGPLv3 or higher.
+# Modifications 5@xes 2020-2022
+#-----------------------------------------------------------------------------------
+
+VERSION_QT5 = False
+try:
+    from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot, QUrl
+    from PyQt6.QtGui import QDesktopServices
+except ImportError:
+    from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot, QUrl
+    from PyQt5.QtGui import QDesktopServices
+    VERSION_QT5 = True
+
 from UM.Tool import Tool
 from UM.Logger import Logger
+from UM.Scene.Selection import Selection
+from cura.CuraApplication import CuraApplication
+
+from UM.i18n import i18nCatalog
+
 import time
 import threading
 import traceback
+import os
+
+
+from typing import cast, List, Optional
+
+
 from UM.Application import Application
 from UM.Resources import Resources
 
+Resources.addSearchPath(
+    os.path.join(os.path.abspath(os.path.dirname(__file__)))
+)  # Plugin translation file import
 
+catalog = i18nCatalog("livescripting")
+
+if catalog.hasTranslationLoaded():
+    Logger.log("i", "Live Scriping Plugin translation loaded!")
+    
+    
 class LiveScripting(Tool):
     def __init__(self):
         super().__init__()
@@ -15,18 +51,97 @@ class LiveScripting(Tool):
         self.__result = ""
         self.__thread = None
         self.__trigger = False
-        self.__auto_run = True
+        self.__auto_run = False
 
+        self._toolbutton_item = None  # type: Optional[QObject]
+        self._tool_enabled = False
+        
+        
         try:
             with open(Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py"), "rt") as f:
                 self.__script = f.read()
         except FileNotFoundError:
+            Logger.log("d", "Live Scriping Plugin File Not Found Error!")
             pass
-
+        
+        self._application = CuraApplication.getInstance()
+        self._controller = self.getController()
         self.setExposedProperties("Script", "Result", "AutoRun")
+
+        self._application.engineCreatedSignal.connect(self._onEngineCreated)
+        Selection.selectionChanged.connect(self._onSelectionChanged)
+        self._controller.activeStageChanged.connect(self._onActiveStageChanged)
+        self._controller.activeToolChanged.connect(self._onActiveToolChanged)
+        
+        self._selection_tool = None  # type: Optional[Tool]
         
         Application.getInstance().aboutToQuit.connect(self.__onQuit)
 
+    def _onSelectionChanged(self) -> None:
+        if not self._toolbutton_item:
+            return
+        self._application.callLater(lambda: self._forceToolEnabled())
+
+    def _onActiveStageChanged(self) -> None:
+        self._tool_enabled = self._controller.getActiveStage().stageId == "PrepareStage"
+        if not self._tool_enabled:
+            self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
+            self._selection_tool = None
+            if self._controller.getActiveTool() == self:
+                self._controller.setActiveTool(self._getFallbackTool())
+        self._forceToolEnabled()
+
+    def _onActiveToolChanged(self) -> None:
+        if self._controller.getActiveTool() != self:
+            Logger.log("w", "ActiveToolChanged {}".format(self._controller.getActiveTool()))
+            self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
+            self._selection_tool = None
+
+    def _findToolbarIcon(self, rootItem: QObject) -> Optional[QObject]:
+        for child in rootItem.childItems():
+            class_name = child.metaObject().className()
+            if class_name.startswith("ToolbarButton_QMLTYPE") and child.property("text") == catalog.i18nc("@label", "LiveScripting"):
+                return child
+            elif (
+                class_name.startswith("QQuickItem")
+                or class_name.startswith("QQuickColumn")
+                or class_name.startswith("Toolbar_QMLTYPE")
+            ):
+                found = self._findToolbarIcon(child)
+                if found:
+                    return found
+        return None
+        
+        
+    def _forceToolEnabled(self, passive=False) -> None:
+        if not self._toolbutton_item:
+            Logger.log("d", "Not toolbutton_item")
+            return
+        try:
+            if self._tool_enabled:
+                self._toolbutton_item.setProperty("enabled", True)
+                if self._application._previous_active_tool == "LiveScripting" and not passive:
+                    self._controller.setActiveTool(self._application._previous_active_tool)
+            else:
+                self._toolbutton_item.setProperty("enabled", False)
+                if self._controller.getActiveTool() == self and not passive:
+                    self._controller.setActiveTool(self._getFallbackTool())
+        except RuntimeError:
+            Logger.log("w", "The toolbutton item seems to have gone missing; trying to find it back.")
+            main_window = self._application.getMainWindow()
+            if not main_window:
+                return
+
+            self._toolbutton_item = self._findToolbarIcon(main_window.contentItem())
+            
+    def _onEngineCreated(self) -> None:
+        main_window = self._application.getMainWindow()
+        if not main_window:
+            return
+            
+        self._toolbutton_item = self._findToolbarIcon(main_window.contentItem())
+        self._forceToolEnabled()
+        
     def __onQuit(self):
         with open(Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py"), "wt") as f:
             f.write(self.__script)
@@ -88,3 +203,9 @@ class LiveScripting(Tool):
         if args:
             self.__print("Exit:", *args)
         raise KeyboardInterrupt
+
+    def _getFallbackTool(self) -> str:
+        try:
+            return self._controller._fallback_tool
+        except AttributeError:
+            return "TranslateTool"
