@@ -1,8 +1,11 @@
 #-----------------------------------------------------------------------------------
-# Part of the initial source code for primitive Shape (c) 2018 fieldOfView
+# Initial Copyright (c) 2015 Ultimaker B.V.
+#    Source Code : https://github.com/Ultimaker/CuraLiveScriptingPlugin
+# 
+# Part of code for forceToolEnabled (c) 2022 fieldOfView ( Source MeasureTool )
 #
-# The CalibrationShapes plugin is released under the terms of the AGPLv3 or higher.
-# Modifications 5@xes 2020-2022
+# The LiveScriping plugin is released under the terms of the AGPLv3 or higher.
+#  Modifications After 2022 5@xes 
 #-----------------------------------------------------------------------------------
 
 VERSION_QT5 = False
