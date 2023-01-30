@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LiveScripting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-30 18:02+0000\n"
+"POT-Creation-Date: 2023-01-30 18:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,4 +25,19 @@ msgstr ""
 #: __init__.py:25
 msgctxt "@label"
 msgid "Scripting Utility"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:59 qml_qt5/LiveScripting.qml:51
+msgctxt "@label"
+msgid "Run"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:65 qml_qt5/LiveScripting.qml:57
+msgctxt "@label"
+msgid "Close"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:71 qml_qt5/LiveScripting.qml:63
+msgctxt "@option:check"
+msgid "Auto run"
 msgstr ""
