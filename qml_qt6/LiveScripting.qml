@@ -45,17 +45,24 @@ Item
         width: childrenRect.width
         height: childrenRect.height
         anchors.bottom: result.top
-        CheckBox {
-            text: "Auto run"
-            checked: UM.ActiveTool.properties.getValue("AutoRun")
-            onClicked: {
-                UM.ActiveTool.setProperty("AutoRun", checked)
-            }
-        }
+
         Button {
             text: "Run"
             onClicked: {
                 UM.ActiveTool.triggerAction("runScript")
+            }
+        }
+		Button {
+            text: "Close"
+            onClicked: {
+                UM.ActiveTool.triggerAction("closeWindows")
+            }
+        }		
+		CheckBox {
+            text: "Auto run"
+            checked: UM.ActiveTool.properties.getValue("AutoRun")
+            onClicked: {
+                UM.ActiveTool.setProperty("AutoRun", checked)
             }
         }
     }
@@ -72,8 +79,7 @@ Item
         readOnly: true
         wrapMode: Text.WordWrap 
 		verticalAlignment : Text.AlignTop
-        // textFormat: TextEdit.PlainText
-		textFormat : Text.AutoText
+		textFormat : Text.PlainText
         font.family: "Courier New"
         text: UM.ActiveTool.properties.getValue("Result")
     }

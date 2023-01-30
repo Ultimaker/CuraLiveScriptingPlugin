@@ -58,7 +58,8 @@ class LiveScripting(Tool):
         
         
         try:
-            with open(Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py"), "rt") as f:
+            self._script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts", "live_script.py")
+            with open(self._script_file, "rt") as f:
                 self.__script = f.read()
         except FileNotFoundError:
             Logger.log("d", "Live Scriping Plugin File Not Found Error!")
@@ -68,6 +69,11 @@ class LiveScripting(Tool):
         self._controller = self.getController()
         self.setExposedProperties("Script", "Result", "AutoRun")
 
+        self._preferences = self._application.getPreferences()
+        self._preferences.addPreference("LiveScripting/auto_run", "")
+        # auto_run
+        self.__auto_run = bool(self._preferences.getValue("LiveScripting/auto_run"))        
+        
         self._application.engineCreatedSignal.connect(self._onEngineCreated)
         Selection.selectionChanged.connect(self._onSelectionChanged)
         self._controller.activeStageChanged.connect(self._onActiveStageChanged)
@@ -93,7 +99,7 @@ class LiveScripting(Tool):
 
     def _onActiveToolChanged(self) -> None:
         if self._controller.getActiveTool() != self:
-            Logger.log("w", "ActiveToolChanged {}".format(self._controller.getActiveTool()))
+            Logger.log("d", "ActiveToolChanged {}".format(self._controller.getActiveTool()))
             self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
             self._selection_tool = None
 
@@ -143,7 +149,7 @@ class LiveScripting(Tool):
         self._forceToolEnabled()
         
     def __onQuit(self):
-        with open(Resources.getStoragePath(Resources.Preferences, "scripts\live_script.py"), "wt") as f:
+        with open(self._script_file, "wt") as f:
             f.write(self.__script)
 
     def getScript(self):
@@ -151,7 +157,7 @@ class LiveScripting(Tool):
 
     def setScript(self, value):
         if value != self.__script:
-            self.__script = value
+            self.__script = str(value)
             self.propertyChanged.emit()
             
             if self.__auto_run:
@@ -163,20 +169,25 @@ class LiveScripting(Tool):
             self.__thread = threading.Thread(target=self.__backgroundJob, daemon=True)
             self.__thread.start()
 
+    def closeWindows(self):
+        if self._controller.getActiveTool() == self:
+            self._controller.setActiveTool(self._getFallbackTool())
+        self._forceToolEnabled()
+
     def getResult(self):
         return self.__result
 
     def setResult(self, value):
         if value != self.__result:
-            self.__result = value
+            self.__result = str(value)
             self.propertyChanged.emit()
 
     def getAutoRun(self):
         return self.__auto_run
 
     def setAutoRun(self, value):
-        if value != self.__auto_run:
-            self.__auto_run = value
+        if bool(value) != self.__auto_run:
+            self.__auto_run = bool(value)
             self.propertyChanged.emit()
 
     def __backgroundJob(self):
