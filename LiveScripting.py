@@ -70,7 +70,7 @@ class LiveScripting(Tool):
         self.setExposedProperties("Script", "Result", "AutoRun")
 
         self._preferences = self._application.getPreferences()
-        self._preferences.addPreference("LiveScripting/auto_run", "")
+        self._preferences.addPreference("LiveScripting/auto_run", False)
         # auto_run
         self.__auto_run = bool(self._preferences.getValue("LiveScripting/auto_run"))        
         
@@ -94,7 +94,7 @@ class LiveScripting(Tool):
             self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
             self._selection_tool = None
             if self._controller.getActiveTool() == self:
-                self._controller.setActiveTool(self._getFallbackTool())
+                self._controller.setActiveTool(self._getNoneTool())
         self._forceToolEnabled()
 
     def _onActiveToolChanged(self) -> None:
@@ -131,7 +131,7 @@ class LiveScripting(Tool):
             else:
                 self._toolbutton_item.setProperty("enabled", False)
                 if self._controller.getActiveTool() == self and not passive:
-                    self._controller.setActiveTool(self._getFallbackTool())
+                    self._controller.setActiveTool(self._getNoneTool())
         except RuntimeError:
             Logger.log("w", "The toolbutton item seems to have gone missing; trying to find it back.")
             main_window = self._application.getMainWindow()
@@ -152,10 +152,10 @@ class LiveScripting(Tool):
         with open(self._script_file, "wt") as f:
             f.write(self.__script)
 
-    def getScript(self):
+    def getScript(self) -> str:
         return self.__script
 
-    def setScript(self, value):
+    def setScript(self, value: str) -> None:
         if value != self.__script:
             self.__script = str(value)
             self.propertyChanged.emit()
@@ -171,24 +171,25 @@ class LiveScripting(Tool):
 
     def closeWindows(self):
         if self._controller.getActiveTool() == self:
-            self._controller.setActiveTool(self._getFallbackTool())
+            self._controller.setActiveTool(self._getNoneTool())
         self._forceToolEnabled()
 
-    def getResult(self):
+    def getResult(self) -> str:
         return self.__result
 
-    def setResult(self, value):
+    def setResult(self, value: str) -> None:
         if value != self.__result:
             self.__result = str(value)
             self.propertyChanged.emit()
 
-    def getAutoRun(self):
+    def getAutoRun(self )-> bool:
         return self.__auto_run
 
-    def setAutoRun(self, value):
+    def setAutoRun(self, value: str) -> None:
         if bool(value) != self.__auto_run:
             self.__auto_run = bool(value)
             self.propertyChanged.emit()
+            self._preferences.setValue("LiveScripting/auto_run", self.__auto_run)
 
     def __backgroundJob(self):
         while self.__trigger:
@@ -220,3 +221,9 @@ class LiveScripting(Tool):
             return self._controller._fallback_tool
         except AttributeError:
             return "TranslateTool"
+
+    def _getNoneTool(self) -> str:
+        try:
+            return self._controller._fallback_tool
+        except AttributeError:
+            return None

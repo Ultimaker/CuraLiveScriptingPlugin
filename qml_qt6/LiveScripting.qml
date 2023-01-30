@@ -1,5 +1,11 @@
 // Copyright (c) 2015 Ultimaker B.V.
+// All Modification after 2023 5@xes
 // Uranium is released under the terms of the AGPLv3 or higher.
+// proterties values
+//   "Script"    : Script Code
+//   "Result"    : Log of the Run Script
+//   "AutoRun"   : AutoRun
+
 
 import QtQuick 6.0
 import QtQuick.Controls 6.0
