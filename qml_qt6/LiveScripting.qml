@@ -16,6 +16,9 @@ import Cura 1.0 as Cura
 Item
 {
     id: base
+	
+	property variant catalog: UM.I18nCatalog { name: "livescripting" }
+	
     // TODO: these widths & heights are a bit too dependant on other objects in the qml...
     width: 500
     height: 500
@@ -53,19 +56,19 @@ Item
         anchors.bottom: result.top
 
         Button {
-            text: "Run"
+            text: catalog.i18nc("@label","Run")
             onClicked: {
                 UM.ActiveTool.triggerAction("runScript")
             }
         }
 		Button {
-            text: "Close"
+            text: catalog.i18nc("@label","Close")
             onClicked: {
                 UM.ActiveTool.triggerAction("closeWindows")
             }
         }		
 		CheckBox {
-            text: "Auto run"
+            text: catalog.i18nc("@option:check","Auto run")
             checked: UM.ActiveTool.properties.getValue("AutoRun")
             onClicked: {
                 UM.ActiveTool.setProperty("AutoRun", checked)
