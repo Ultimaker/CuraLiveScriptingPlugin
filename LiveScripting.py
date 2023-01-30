@@ -16,6 +16,7 @@ except ImportError:
 
 from UM.Tool import Tool
 from UM.Logger import Logger
+from UM.Message import Message
 from UM.Scene.Selection import Selection
 from cura.CuraApplication import CuraApplication
 
@@ -74,6 +75,7 @@ class LiveScripting(Tool):
         # auto_run
         self.__auto_run = bool(self._preferences.getValue("LiveScripting/auto_run"))        
         
+        self._application.aboutToQuit.connect(self.__onQuit)
         self._application.engineCreatedSignal.connect(self._onEngineCreated)
         Selection.selectionChanged.connect(self._onSelectionChanged)
         self._controller.activeStageChanged.connect(self._onActiveStageChanged)
@@ -81,7 +83,7 @@ class LiveScripting(Tool):
         
         self._selection_tool = None  # type: Optional[Tool]
         
-        Application.getInstance().aboutToQuit.connect(self.__onQuit)
+        
 
     def _onSelectionChanged(self) -> None:
         if not self._toolbutton_item:
@@ -149,14 +151,22 @@ class LiveScripting(Tool):
         self._forceToolEnabled()
         
     def __onQuit(self):
+        Logger.log("w", "Quit Save {}".format(self.__script))
         with open(self._script_file, "wt") as f:
             f.write(self.__script)
+            Logger.log("w", "Done for : {}".format(self._script_file))
+            
+    def saveCode(self):
+        with open(self._script_file, "wt") as f:
+            f.write(self.__script)
+        
+        Message(text = "Script succesfully Saved : \n %s" % self._script_file, title = catalog.i18nc("@title", "Live Scripting")).show()        
 
     def getScript(self) -> str:
         return self.__script
 
     def setScript(self, value: str) -> None:
-        Logger.log("w", "The New Script {}".format(value))
+        # Logger.log("w", "The New Script {}".format(value))
         if str(value) != str(self.__script):
             self.__script = str(value)
             self.propertyChanged.emit()

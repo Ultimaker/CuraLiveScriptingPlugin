@@ -58,7 +58,13 @@ Item
             onClicked: {
                 UM.ActiveTool.triggerAction("closeWindows")
             }
-        }	
+        }
+		Button {
+            text: catalog.i18nc("@label","Save")
+            onClicked: {
+                UM.ActiveTool.triggerAction("saveCode")
+            }
+        }		
         CheckBox {
             text: catalog.i18nc("@option:check","Auto run")
             checked: UM.ActiveTool.properties.getValue("AutoRun")

@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Ultimaker B.V.
 // All Modification after 2023 5@xes
-// Uranium is released under the terms of the AGPLv3 or higher.
+// LiveScripting is released under the terms of the AGPLv3 or higher.
 // proterties values
 //   "Script"    : Script Code
 //   "Result"    : Log of the Run Script
@@ -66,7 +66,13 @@ Item
             onClicked: {
                 UM.ActiveTool.triggerAction("closeWindows")
             }
-        }		
+        }
+		Button {
+            text: catalog.i18nc("@label","Save")
+            onClicked: {
+                UM.ActiveTool.triggerAction("saveCode")
+            }
+        }			
 		CheckBox {
             text: catalog.i18nc("@option:check","Auto run")
             checked: UM.ActiveTool.properties.getValue("AutoRun")
