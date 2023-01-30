@@ -11,7 +11,6 @@ import QtQuick 6.0
 import QtQuick.Controls 6.0
 
 import UM 1.6 as UM
-import Cura 1.0 as Cura
 
 Item
 {
