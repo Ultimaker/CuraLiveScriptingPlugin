@@ -50,6 +50,7 @@ class LiveScripting(Tool):
         super().__init__()
 
         self.__script = ""
+        self.__path = ""
         self.__result = ""
         self.__thread = None
         self.__trigger = False
@@ -69,14 +70,16 @@ class LiveScripting(Tool):
         
         self._application = CuraApplication.getInstance()
         self._controller = self.getController()
-        self.setExposedProperties("Script", "Result", "AutoRun")
+        self.setExposedProperties("ScriptPath", "Script", "Result", "AutoRun")
 
         self._preferences = self._application.getPreferences()
         self._preferences.addPreference("LiveScripting/auto_run", False)
         # auto_run
         self.__auto_run = bool(self._preferences.getValue("LiveScripting/auto_run"))        
-        
-        self._application.aboutToQuit.connect(self.__onQuit)
+
+        # Before to Exit
+        self._application.getOnExitCallbackManager().addCallback(self._onExitCallback)        
+        self._application.aboutToQuit.connect(self._onQuit)
         self._application.engineCreatedSignal.connect(self._onEngineCreated)
         Selection.selectionChanged.connect(self._onSelectionChanged)
         self._controller.activeStageChanged.connect(self._onActiveStageChanged)
@@ -148,18 +151,47 @@ class LiveScripting(Tool):
             
         self._toolbutton_item = self._findToolbarIcon(main_window.contentItem())
         self._forceToolEnabled()
+
+    def _onExitCallback(self)->None:
+        ''' Called as Cura is closing to ensure that script were saved before exiting '''
+
+        Logger.log("d", "onExitCallback")
+
+        # Save the script 
+        try:
+            with open(self._script_file, "wt") as f:
+                f.write(self.__script)
+                Logger.log("d", "Done for : {}".format(self._script_file))
+        except AttributeError:
+            pass
+
+        self._application.triggerNextExitCheck()  
         
-    def __onQuit(self):
-        Logger.log("w", "Quit Save {}".format(self.__script))
+    def _onQuit(self):
+        Logger.log("d", "Quit Save {}".format(self.__script))
         with open(self._script_file, "wt") as f:
             f.write(self.__script)
-            Logger.log("w", "Done for : {}".format(self._script_file))
+            Logger.log("d", "Done for : {}".format(self._script_file))
             
     def saveCode(self):
         with open(self._script_file, "wt") as f:
             f.write(self.__script)
         
         Message(text = "Script succesfully Saved : \n %s" % self._script_file, title = catalog.i18nc("@title", "Live Scripting")).show()        
+
+    def getScriptPath(self) -> str:
+        return self.__path
+
+    def setScriptPath(self, value: str) -> None:
+        Logger.log("w", "The New Script PATH {}".format(value))
+        self.__path = str(value)
+        self._script_file = self.__path 
+        with open(self._script_file, "rt") as f:
+            self.__script = f.read()
+        self.propertyChanged.emit()
+        
+        if self.__auto_run:
+            self.runScript()
 
     def getScript(self) -> str:
         return self.__script
@@ -184,6 +216,11 @@ class LiveScripting(Tool):
             self._controller.setActiveTool(self._getNoneTool())
         self._forceToolEnabled()
 
+    def openFile(self, value: str) -> None:
+        self._script_file = str(value) 
+        with open(self._script_file, "rt") as f:
+            self.__script = f.read()
+        
     def getResult(self) -> str:
         return self.__result
 
