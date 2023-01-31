@@ -38,8 +38,7 @@ def toMeshData(tri_node: trimesh.base.Trimesh) -> MeshData:
     mesh_data = MeshData(vertices=vertices, indices=indices, normals=normals)
     return mesh_data
 
-def addShape(mesh_data: MeshData, ext_pos = 0) -> None:
-    ext_pos = 0
+def addShape(mesh_data: MeshData) -> None:
     application = CuraApplication.getInstance()
     global_stack = application.getGlobalContainerStack()
     if not global_stack:
@@ -67,4 +66,4 @@ def addShape(mesh_data: MeshData, ext_pos = 0) -> None:
 """
 Cylinder creation Radius = 10 height = 20
 """
-addShape(toMeshData(trimesh.primitives.Cylinder(radius = 10, height = 20)),0)
+addShape(toMeshData(trimesh.primitives.Cylinder(radius = 10, height = 20)))
