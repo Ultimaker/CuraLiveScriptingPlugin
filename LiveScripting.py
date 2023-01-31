@@ -42,8 +42,7 @@ Resources.addSearchPath(
 catalog = i18nCatalog("livescripting")
 
 if catalog.hasTranslationLoaded():
-    Logger.log("i", "Live Scriping Plugin translation loaded!")
-    
+    Logger.log("i", "Live Scripting Plugin translation loaded!")
     
 class LiveScripting(Tool):
     def __init__(self):
@@ -60,13 +59,12 @@ class LiveScripting(Tool):
         self._toolbutton_item = None  # type: Optional[QObject]
         self._tool_enabled = False
         
-        
         try:
             self._script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts", "live_script.py")
             with open(self._script_file, "rt") as f:
                 self.__script = f.read()
         except FileNotFoundError:
-            Logger.log("d", "Live Scriping Plugin File Not Found Error!")
+            Logger.log("d", "Live Scripting Plugin File Not Found Error!")
             pass
         
         self.__scriptfolder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts")
@@ -96,7 +94,9 @@ class LiveScripting(Tool):
         self._application.callLater(lambda: self._forceToolEnabled())
 
     def _onActiveStageChanged(self) -> None:
-        self._tool_enabled = self._controller.getActiveStage().stageId == "PrepareStage"
+        # Logger.log("d", "Active Stage Changed {}".format(self._controller.getActiveStage().stageId))
+        ActiveStage = self._controller.getActiveStage().stageId
+        self._tool_enabled = ActiveStage == "PrepareStage" or ActiveStage == "PreviewStage"
         if not self._tool_enabled:
             self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
             self._selection_tool = None
@@ -106,7 +106,7 @@ class LiveScripting(Tool):
 
     def _onActiveToolChanged(self) -> None:
         if self._controller.getActiveTool() != self:
-            Logger.log("d", "ActiveToolChanged {}".format(self._controller.getActiveTool()))
+            # Logger.log("d", "ActiveToolChanged {}".format(self._controller.getActiveTool()))
             self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
             self._selection_tool = None
 
@@ -128,7 +128,6 @@ class LiveScripting(Tool):
         
     def _forceToolEnabled(self, passive=False) -> None:
         if not self._toolbutton_item:
-            Logger.log("d", "Not toolbutton_item")
             return
         try:
             if self._tool_enabled:
@@ -157,24 +156,23 @@ class LiveScripting(Tool):
 
     def _onExitCallback(self)->None:
         ''' Called as Cura is closing to ensure that script were saved before exiting '''
-
         Logger.log("d", "onExitCallback")
 
         # Save the script 
         try:
             with open(self._script_file, "wt") as f:
                 f.write(self.__script)
-                Logger.log("d", "Done for : {}".format(self._script_file))
         except AttributeError:
             pass
-
+        
+        Logger.log("d", "Done for : {}".format(self._script_file))
         self._application.triggerNextExitCheck()  
         
     def _onQuit(self):
-        Logger.log("d", "Quit Save {}".format(self.__script))
         with open(self._script_file, "wt") as f:
             f.write(self.__script)
-            Logger.log("d", "Done for : {}".format(self._script_file))
+            Logger.log("d", "Done on Quit for : {}".format(self._script_file))
+        Logger.log("d", "Quit Save {}".format(self.__script))
             
     def saveCode(self):
         with open(self._script_file, "wt") as f:
@@ -189,7 +187,7 @@ class LiveScripting(Tool):
         return self.__path
 
     def setScriptPath(self, value: str) -> None:
-        Logger.log("w", "The New Script PATH {}".format(value))
+        # Logger.log("w", "The New Script PATH {}".format(value))
         self.__path = str(value)
         self._script_file = self.__path 
         with open(self._script_file, "rt") as f:
@@ -214,7 +212,7 @@ class LiveScripting(Tool):
     def runScript(self):
         self.__trigger = True
         if self.__thread is None:
-            self.__thread = threading.Thread(target=self.__backgroundJob, daemon=True)
+            self.__thread = threading.Thread(target=self._backgroundJob, daemon=True)
             self.__thread.start()
 
     def closeWindows(self):
@@ -244,7 +242,7 @@ class LiveScripting(Tool):
             self.propertyChanged.emit()
             self._preferences.setValue("LiveScripting/auto_run", self.__auto_run)
 
-    def __backgroundJob(self):
+    def _backgroundJob(self):
         while self.__trigger:
             while self.__trigger:
                 self.__trigger = False
@@ -252,7 +250,7 @@ class LiveScripting(Tool):
             self.__output = ""
             self.setResult(self.__output)
             try:
-                exec(self.__script, {'print': self.__print, 'exit': self.__exit})
+                exec(self.__script, {'print': self._print, 'exit': self._exit})
             except KeyboardInterrupt:
                 pass
             except BaseException as e:
@@ -260,13 +258,13 @@ class LiveScripting(Tool):
             self.setResult(self.__output)
         self.__thread = None
 
-    def __print(self, *args):
+    def _print(self, *args):
         self.__output += " ".join(map(str, args)) + "\n"
         self.setResult(self.__output)
 
-    def __exit(self, *args):
+    def _exit(self, *args):
         if args:
-            self.__print("Exit:", *args)
+            self._print("Exit:", *args)
         raise KeyboardInterrupt
 
     def _getFallbackTool(self) -> str:
