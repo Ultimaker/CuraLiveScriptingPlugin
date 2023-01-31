@@ -2,8 +2,8 @@
 # Initial Copyright (c) 2015 Ultimaker B.V.
 #    Source Code : https://github.com/Ultimaker/CuraLiveScriptingPlugin
 # 
-# Part of code for forceToolEnabled (c) 2022 fieldOfView ( Source MeasureTool )
-#
+# Part of code for forceToolEnabled Copyright (c) 2022 Aldo Hoeben / fieldOfView ( Source MeasureTool )
+# 
 # The LiveScriping plugin is released under the terms of the AGPLv3 or higher.
 #  Modifications After 2022 5@xes 
 #-----------------------------------------------------------------------------------
@@ -30,9 +30,7 @@ import threading
 import traceback
 import os
 
-
-from typing import cast, List, Optional
-
+from typing import  Optional
 
 from UM.Application import Application
 from UM.Resources import Resources
@@ -86,8 +84,6 @@ class LiveScripting(Tool):
         
         self._selection_tool = None  # type: Optional[Tool]
         
-        
-
     def _onSelectionChanged(self) -> None:
         if not self._toolbutton_item:
             return
