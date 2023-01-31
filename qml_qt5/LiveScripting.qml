@@ -85,7 +85,7 @@ Item
 			
 			function pathToUrl(path)
 			{
-				// Convert the url to a usable string path
+				// Convert the path to a usable url
 				var url = "file:///"
 				url = url + path
 				url = encodeURIComponent(url)
