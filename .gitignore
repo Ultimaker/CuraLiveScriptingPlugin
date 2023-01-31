@@ -1,4 +1,5 @@
 
 *.qmlc
 *.pyc
-plugin_scripts/live_script.py
+
+live_script.py
