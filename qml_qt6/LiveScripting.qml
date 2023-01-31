@@ -40,7 +40,7 @@ Item
 		textArea.textFormat : Text.PlainText
         textArea.text: UM.ActiveTool.properties.getValue("Script")
         textArea.onTextChanged: {
-            UM.ActiveTool.setProperty("Script", text)
+            UM.ActiveTool.setProperty("Script", textArea.text)
         }
         Keys.onPressed: {
             if (event.key == Qt.Key_Tab) {
