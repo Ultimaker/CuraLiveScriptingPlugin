@@ -184,7 +184,13 @@ class LiveScripting(Tool):
 	def getScriptFolder(self) -> str:
 		# Logger.log("d", "Script folder {}".format(self._scriptfolder))
 		return self._scriptfolder
-		
+
+	def setScriptFolder(self, value: str) -> None:
+		# self._script_file = self._path 
+		with open(str(value), "wt") as f:
+			f.write(self._script)
+		Message(text = "Script succesfully Saved : \n %s" % value, title = catalog.i18nc("@title", "Live Scripting")).show()
+
 	def getScriptPath(self) -> str:
 		return self._path
 

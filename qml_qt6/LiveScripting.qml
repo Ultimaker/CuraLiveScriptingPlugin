@@ -23,8 +23,8 @@ Item
 	property variant catalog: UM.I18nCatalog { name: "livescripting" }
 	
 	// TODO: these widths & heights are a bit too dependant on other objects in the qml...
-	width: 500
-	height: 500
+	width: 600
+	height: 600
 	
 	Cura.ScrollableTextArea {
 		id: inputfg
@@ -54,6 +54,8 @@ Item
 		width: childrenRect.width
 		height: childrenRect.height
 		anchors.bottom: result.top
+		
+		spacing: Math.round(UM.Theme.getSize("default_margin").width / 2)
 
 		Button {
 			text: catalog.i18nc("@label","Run")
@@ -114,8 +116,49 @@ Item
 				return path
 			}
 		}
+
+		Button {
+			text: catalog.i18nc("@label","Save As")
+			onClicked: fileDialogSave.open()
+		}
+
+		FileDialog
+		{
+			id: fileDialogSave
+			// fileUrl QT5 !
+			onAccepted: UM.ActiveTool.setProperty("ScriptFolder", urlToStringPath(selectedFile))
+			fileMode: FileDialog.SaveFile
+			nameFilters: "*.py"
+			currentFolder:pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))
 			
-		CheckBox {
+			function pathToUrl(path)
+			{
+				// Convert the path to a usable url
+				var url = "file:///"
+				url = url + path
+				url = encodeURIComponent(url)
+				
+				// Return the resulting url
+				return url
+			}
+			
+			function urlToStringPath(url)
+			{
+				// Convert the url to a usable string path
+				var path = url.toString()
+				path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
+				path = decodeURIComponent(path)
+
+				// On Linux, a forward slash needs to be prepended to the resulting path
+				// I'm guessing this is needed on Mac OS, as well, but can't test it
+				if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
+				
+				// Return the resulting path
+				return path
+			}
+		}
+		
+		UM.CheckBox {
 			text: catalog.i18nc("@option:check","Auto run")
 			checked: UM.ActiveTool.properties.getValue("AutoRun")
 			onClicked: {
@@ -127,7 +170,7 @@ Item
 		id: result
 		anchors.bottom: parent.bottom
 		width: parent.width
-		height: 200
+		height: 150
 		
 		textArea.readOnly: true
 		textArea.wrapMode: Text.Wrap 

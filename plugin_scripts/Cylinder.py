@@ -66,4 +66,4 @@ def addShape(mesh_data: MeshData) -> None:
 """
 Cylinder creation Radius = 10 height = 20
 """
-addShape(toMeshData(trimesh.primitives.Cylinder(radius = 10, height = 20)))
+addShape(toMeshData(trimesh.primitives.Cylinder(radius = 10, height = 20, sections=90)))
