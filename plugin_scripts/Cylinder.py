@@ -38,7 +38,8 @@ def toMeshData(tri_node: trimesh.base.Trimesh) -> MeshData:
     mesh_data = MeshData(vertices=vertices, indices=indices, normals=normals)
     return mesh_data
 
-def addShape(mesh_data: MeshData) -> None:
+def addShape(mesh_data: MeshData, ext_pos = 0) -> None:
+    ext_pos = 0
     application = CuraApplication.getInstance()
     global_stack = application.getGlobalContainerStack()
     if not global_stack:
@@ -54,9 +55,6 @@ def addShape(mesh_data: MeshData) -> None:
     op = AddSceneNodeOperation(node, scene.getRoot())
     op.push()
 
-    default_extruder_position = application.getMachineManager().defaultExtruderPosition
-    default_extruder_id = global_stack.extruders[default_extruder_position].getId()
-    node.callDecoration("setActiveExtruder", default_extruder_id)
 
     active_build_plate = application.getMultiBuildPlateModel().activeBuildPlate
     node.addDecorator(BuildPlateDecorator(active_build_plate))
@@ -65,8 +63,8 @@ def addShape(mesh_data: MeshData) -> None:
 
     application.getController().getScene().sceneChanged.emit(node)
 
+
 """
 Cylinder creation Radius = 10 height = 20
 """
-addShape(toMeshData(trimesh.primitives.Cylinder(radius = 10, height = 20)))
-
+addShape(toMeshData(trimesh.primitives.Cylinder(radius = 10, height = 20)),0)
