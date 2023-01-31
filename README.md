@@ -14,9 +14,9 @@ Cura Live scripting Plugin
   Close The Windows open on a Force Mode.
   
 ## Save
-  Save the Script ( Defaut name : live_script.py)
+  Save the Script ( Defaut name : live_script.py).
 
-## Save as
+## Save As
   Save the Script under a choosen name.
   
 ### Default path
@@ -29,7 +29,7 @@ This menu opens the following folder:
 * Mac OS: `$HOME/Library/Application Support/cura/<Cura version>/plugins/CuraLiveScripting/CuraLiveScripting/plugin_scripts`
 * Linux: `$HOME/.local/share/cura/<Cura version>/plugins/CuraLiveScripting/CuraLiveScripting/plugin_scripts`
 
-## OpenFile
+## Open File
 
 Open an existing script File.
 
