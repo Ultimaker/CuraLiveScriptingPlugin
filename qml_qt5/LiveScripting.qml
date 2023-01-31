@@ -18,10 +18,10 @@ import Cura 1.0 as Cura
 Item
 {
     id: base
-	
-	property variant catalog: UM.I18nCatalog { name: "livescripting" }
-	
-	
+    
+    property variant catalog: UM.I18nCatalog { name: "livescripting" }
+    
+    
     // TODO: these widths & heights are a bit too dependant on other objects in the qml...
     width: 500
     height: 500
@@ -57,54 +57,54 @@ Item
                 UM.ActiveTool.triggerAction("runScript")
             }
         }
-		Button {
+        Button {
             text: catalog.i18nc("@label","Close")
             onClicked: {
                 UM.ActiveTool.triggerAction("closeWindows")
             }
         }
-		Button {
+        Button {
             text: catalog.i18nc("@label","Save")
             onClicked: {
                 UM.ActiveTool.triggerAction("saveCode")
             }
-        }	
-		Button {
+        }    
+        Button {
             text: catalog.i18nc("@label","Open File")
             onClicked: fileDialog.open()
         }
 
-		FileDialog
-		{
-			id: fileDialog
-			onAccepted: UM.ActiveTool.setProperty("ScriptPath", urlToStringPath(fileUrl))
-			// fileUrl QT5 !
+        FileDialog
+        {
+            id: fileDialog
+            onAccepted: UM.ActiveTool.setProperty("ScriptPath", urlToStringPath(fileUrl))
+            // fileUrl QT5 !
             nameFilters: "*.py"
             folder: CuraApplication.getDefaultPath("dialog_load_path")
-		
-			function urlToStringPath(url)
-			{
-				// Convert the url to a usable string path
-				var path = url.toString()
-				path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
-				path = decodeURIComponent(path)
+        
+            function urlToStringPath(url)
+            {
+                // Convert the url to a usable string path
+                var path = url.toString()
+                path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
+                path = decodeURIComponent(path)
 
-				// On Linux, a forward slash needs to be prepended to the resulting path
-				// I'm guessing this is needed on Mac OS, as well, but can't test it
-				if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
-				
-				// Return the resulting path
-				return path
-			}
-		}
-		
+                // On Linux, a forward slash needs to be prepended to the resulting path
+                // I'm guessing this is needed on Mac OS, as well, but can't test it
+                if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
+                
+                // Return the resulting path
+                return path
+            }
+        }
+        
         CheckBox {
             text: catalog.i18nc("@option:check","Auto run")
             checked: UM.ActiveTool.properties.getValue("AutoRun")
             onClicked: {
                 UM.ActiveTool.setProperty("AutoRun", checked)
             }
-        }		
+        }        
     }
     TextArea {
         id: result
