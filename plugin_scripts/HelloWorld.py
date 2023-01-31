@@ -1,5 +1,5 @@
-# Sample Hellow World script
+# Sample Hello World script
 
 from UM.Message import Message
 
-Message(text = "Hellow World").show()
+Message(text = "Hello World").show()
