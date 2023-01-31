@@ -1,4 +1,4 @@
-# Sample test_script 
+# Sample test_script
 # Get from PrintInformation the Job Name and display in a message
 # Get the support_xy_distance  and display the value in a message
 
