@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LiveScripting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-31 12:22+0000\n"
+"POT-Creation-Date: 2023-01-31 12:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: LiveScripting.py:122 __init__.py:24
+#: LiveScripting.py:123 __init__.py:24
 msgctxt "@label"
 msgid "LiveScripting"
 msgstr ""
 
-#: LiveScripting.py:187
+#: LiveScripting.py:182
 msgctxt "@title"
 msgid "Live Scripting"
 msgstr ""
