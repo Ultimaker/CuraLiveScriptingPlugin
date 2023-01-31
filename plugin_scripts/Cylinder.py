@@ -2,10 +2,8 @@
 # A Simple Code to create a Cylinder in Cura Using Trimesh
 
 import numpy
-import math
 import trimesh
 
-from UM.Extension import Extension
 from cura.CuraApplication import CuraApplication
 
 from UM.Mesh.MeshData import MeshData, calculateNormalsFromIndexedVertices
@@ -67,6 +65,8 @@ def addShape(mesh_data: MeshData) -> None:
 
     application.getController().getScene().sceneChanged.emit(node)
 
-
+"""
+Cylinder creation Radius = 10 height = 20
+"""
 addShape(toMeshData(trimesh.primitives.Cylinder(radius = 10, height = 20)))
 
