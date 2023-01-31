@@ -48,35 +48,34 @@ class LiveScripting(Tool):
     def __init__(self):
         super().__init__()
 
-        self.__script = ""
-        self.__path = ""
-        self.__scriptfolder = ""
-        self.__result = ""
-        self.__thread = None
-        self.__trigger = False
-        self.__auto_run = False
+        self._script = ""
+        self._path = ""
+        self._scriptfolder = ""
+        self._result = ""
+        self._thread = None
+        self._trigger = False
+        self._auto_run = False
 
         self._toolbutton_item = None  # type: Optional[QObject]
         self._tool_enabled = False
         
         try:
-            self._script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts", "live_script.py")
+            self._script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pluginscripts", "live_script.py")
+            self._scriptfolder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pluginscripts")
             with open(self._script_file, "rt") as f:
-                self.__script = f.read()
+                self._script = f.read()
         except FileNotFoundError:
             Logger.log("d", "Live Scripting Plugin File Not Found Error!")
             pass
         
-        self.__scriptfolder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts")
-        
         self._application = CuraApplication.getInstance()
         self._controller = self.getController()
-        self.setExposedProperties("ScriptFolder","ScriptPath", "Script", "Result", "AutoRun")
+        self.setExposedProperties("ScriptFolder", "ScriptPath", "Script", "Result", "AutoRun")
 
         self._preferences = self._application.getPreferences()
         self._preferences.addPreference("LiveScripting/auto_run", False)
         # auto_run
-        self.__auto_run = bool(self._preferences.getValue("LiveScripting/auto_run"))        
+        self._auto_run = bool(self._preferences.getValue("LiveScripting/auto_run"))        
 
         # Before to Exit
         self._application.getOnExitCallbackManager().addCallback(self._onExitCallback)        
@@ -168,7 +167,7 @@ class LiveScripting(Tool):
         # Save the script 
         try:
             with open(self._script_file, "wt") as f:
-                f.write(self.__script)
+                f.write(self._script)
         except AttributeError:
             pass
         
@@ -177,50 +176,50 @@ class LiveScripting(Tool):
         
     def _onQuit(self):
         with open(self._script_file, "wt") as f:
-            f.write(self.__script)
+            f.write(self._script)
             Logger.log("d", "Done on Quit for : {}".format(self._script_file))
-        Logger.log("d", "Quit Save {}".format(self.__script))
+        Logger.log("d", "Quit Save {}".format(self._script))
             
     def saveCode(self):
         with open(self._script_file, "wt") as f:
-            f.write(self.__script)
+            f.write(self._script)
         
         Message(text = "Script succesfully Saved : \n %s" % self._script_file, title = catalog.i18nc("@title", "Live Scripting")).show()        
 
     def getScriptFolder(self) -> str:
-        return self.__scriptfolder
+        return self._scriptfolder
         
     def getScriptPath(self) -> str:
-        return self.__path
+        return self._path
 
     def setScriptPath(self, value: str) -> None:
         # Logger.log("w", "The New Script PATH {}".format(value))
-        self.__path = str(value)
-        self._script_file = self.__path 
+        self._path = str(value)
+        self._script_file = self._path 
         with open(self._script_file, "rt") as f:
-            self.__script = f.read()
+            self._script = f.read()
         self.propertyChanged.emit()
         
-        if self.__auto_run:
+        if self._auto_run:
             self.runScript()
 
     def getScript(self) -> str:
-        return self.__script
+        return self._script
 
     def setScript(self, value: str) -> None:
         # Logger.log("w", "The New Script {}".format(value))
-        if str(value) != str(self.__script):
-            self.__script = str(value)
+        if str(value) != str(self._script):
+            self._script = str(value)
             self.propertyChanged.emit()
             
-            if self.__auto_run:
+            if self._auto_run:
                 self.runScript()
 
     def runScript(self):
-        self.__trigger = True
-        if self.__thread is None:
-            self.__thread = threading.Thread(target=self._backgroundJob, daemon=True)
-            self.__thread.start()
+        self._trigger = True
+        if self._thread is None:
+            self._thread = threading.Thread(target=self._backgroundJob, daemon=True)
+            self._thread.start()
 
     def closeWindows(self):
         if self._controller.getActiveTool() == self:
@@ -230,44 +229,44 @@ class LiveScripting(Tool):
     def openFile(self, value: str) -> None:
         self._script_file = str(value) 
         with open(self._script_file, "rt") as f:
-            self.__script = f.read()
+            self._script = f.read()
         
     def getResult(self) -> str:
-        return self.__result
+        return self._result
 
     def setResult(self, value: str) -> None:
-        if value != self.__result:
-            self.__result = str(value)
+        if value != self._result:
+            self._result = str(value)
             self.propertyChanged.emit()
 
     def getAutoRun(self )-> bool:
-        return self.__auto_run
+        return self._auto_run
 
     def setAutoRun(self, value: bool) -> None:
         # Logger.log("w", "SetAutoRun {}".format(value))
-        self.__auto_run = value
+        self._auto_run = value
         self.propertyChanged.emit()
-        self._preferences.setValue("LiveScripting/auto_run", self.__auto_run)
+        self._preferences.setValue("LiveScripting/auto_run", self._auto_run)
 
     def _backgroundJob(self):
-        while self.__trigger:
-            while self.__trigger:
-                self.__trigger = False
+        while self._trigger:
+            while self._trigger:
+                self._trigger = False
                 time.sleep(0.5)
-            self.__output = ""
-            self.setResult(self.__output)
+            self._output = ""
+            self.setResult(self._output)
             try:
-                exec(self.__script, {'print': self._print, 'exit': self._exit})
+                exec(self._script, {'print': self._print, 'exit': self._exit})
             except KeyboardInterrupt:
                 pass
             except BaseException as e:
-                self.__output += traceback.format_exc()
-            self.setResult(self.__output)
-        self.__thread = None
+                self._output += traceback.format_exc()
+            self.setResult(self._output)
+        self._thread = None
 
     def _print(self, *args):
-        self.__output += " ".join(map(str, args)) + "\n"
-        self.setResult(self.__output)
+        self._output += " ".join(map(str, args)) + "\n"
+        self.setResult(self._output)
 
     def _exit(self, *args):
         if args:
