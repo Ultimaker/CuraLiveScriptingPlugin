@@ -61,8 +61,8 @@ class LiveScripting(Tool):
         self._tool_enabled = False
         
         try:
-            self._script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pluginscripts", "live_script.py")
-            self._scriptfolder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pluginscripts")
+            self._script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "plugin_scripts", "live_script.py")
+            self._scriptfolder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "plugin_scripts")
             with open(self._script_file, "rt") as f:
                 self._script = f.read()
         except FileNotFoundError:
