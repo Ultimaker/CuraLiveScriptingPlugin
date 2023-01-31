@@ -15,3 +15,4 @@ global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
 extruder = global_container_stack.extruderList[0]
 xy_distance = extruder.getProperty("support_xy_distance", "value")
 Message(text = "xy_distance : %8.3f\n" % xy_distance).show()
+

@@ -195,8 +195,8 @@ class LiveScripting(Tool):
     def setScriptPath(self, value: str) -> None:
         # Logger.log("w", "The New Script PATH {}".format(value))
         self._path = str(value)
-        self._script_file = self._path 
-        with open(self._script_file, "rt") as f:
+        # self._script_file = self._path 
+        with open(self._path, "rt") as f:
             self._script = f.read()
         self.propertyChanged.emit()
         
@@ -225,11 +225,6 @@ class LiveScripting(Tool):
         if self._controller.getActiveTool() == self:
             self._controller.setActiveTool(self._getNoneTool())
         self._forceToolEnabled()
-
-    def openFile(self, value: str) -> None:
-        self._script_file = str(value) 
-        with open(self._script_file, "rt") as f:
-            self._script = f.read()
         
     def getResult(self) -> str:
         return self._result
