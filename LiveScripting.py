@@ -81,20 +81,28 @@ class LiveScripting(Tool):
         # Before to Exit
         self._application.getOnExitCallbackManager().addCallback(self._onExitCallback)        
         self._application.aboutToQuit.connect(self._onQuit)
+        # Part of code for forceToolEnabled Copyright (c) 2022 Aldo Hoeben / fieldOfView ( Source MeasureTool )
         self._application.engineCreatedSignal.connect(self._onEngineCreated)
         Selection.selectionChanged.connect(self._onSelectionChanged)
         self._controller.activeStageChanged.connect(self._onActiveStageChanged)
         self._controller.activeToolChanged.connect(self._onActiveToolChanged)
         
         self._selection_tool = None  # type: Optional[Tool]
-        
+    
+    # -------------------------------------------------------------------------------------------------------------
+    # Origin of this code for forceToolEnabled Copyright (c) 2022 Aldo Hoeben / fieldOfView ( Source MeasureTool )
+    # def _onSelectionChanged
+    # def _onActiveStageChanged
+    # def _onActiveToolChanged
+    # def _findToolbarIcon
+    # def _forceToolEnabled
+    # -------------------------------------------------------------------------------------------------------------
     def _onSelectionChanged(self) -> None:
         if not self._toolbutton_item:
             return
         self._application.callLater(lambda: self._forceToolEnabled())
 
     def _onActiveStageChanged(self) -> None:
-        # Logger.log("d", "Active Stage Changed {}".format(self._controller.getActiveStage().stageId))
         ActiveStage = self._controller.getActiveStage().stageId
         self._tool_enabled = ActiveStage == "PrepareStage" or ActiveStage == "PreviewStage"
         if not self._tool_enabled:
@@ -106,7 +114,6 @@ class LiveScripting(Tool):
 
     def _onActiveToolChanged(self) -> None:
         if self._controller.getActiveTool() != self:
-            # Logger.log("d", "ActiveToolChanged {}".format(self._controller.getActiveTool()))
             self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
             self._selection_tool = None
 
@@ -124,7 +131,6 @@ class LiveScripting(Tool):
                 if found:
                     return found
         return None
-        
         
     def _forceToolEnabled(self, passive=False) -> None:
         if not self._toolbutton_item:
@@ -154,6 +160,7 @@ class LiveScripting(Tool):
         self._toolbutton_item = self._findToolbarIcon(main_window.contentItem())
         self._forceToolEnabled()
 
+    # -------------------------------------------------------------------------------------------------------------
     def _onExitCallback(self)->None:
         ''' Called as Cura is closing to ensure that script were saved before exiting '''
         Logger.log("d", "onExitCallback")
