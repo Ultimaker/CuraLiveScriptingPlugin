@@ -1,12 +1,13 @@
-#-----------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------
 # Initial Copyright (c) 2015 Ultimaker B.V.
 #    Source Code : https://github.com/Ultimaker/CuraLiveScriptingPlugin
 # 
 # Part of code for forceToolEnabled Copyright (c) 2022 Aldo Hoeben / fieldOfView ( Source MeasureTool )
 # 
 # The LiveScriping plugin is released under the terms of the AGPLv3 or higher.
-#  Modifications After 2022 5@xes 
-#-----------------------------------------------------------------------------------
+#
+# Modifications After 2022 5@xes 
+#-----------------------------------------------------------------------------------------------------------
 
 VERSION_QT5 = False
 try:
@@ -79,7 +80,7 @@ class LiveScripting(Tool):
 
         # Before to Exit
         self._application.getOnExitCallbackManager().addCallback(self._onExitCallback)        
-        self._application.aboutToQuit.connect(self._onQuit)
+
         # Part of code for forceToolEnabled Copyright (c) 2022 Aldo Hoeben / fieldOfView ( Source MeasureTool )
         self._application.engineCreatedSignal.connect(self._onEngineCreated)
         Selection.selectionChanged.connect(self._onSelectionChanged)
@@ -171,15 +172,9 @@ class LiveScripting(Tool):
         except AttributeError:
             pass
         
-        Logger.log("d", "Done for : {}".format(self._script_file))
+        Logger.log("d", "Save Done for : {}".format(self._script_file))
         self._application.triggerNextExitCheck()  
-        
-    def _onQuit(self):
-        with open(self._script_file, "wt") as f:
-            f.write(self._script)
-            Logger.log("d", "Done on Quit for : {}".format(self._script_file))
-        Logger.log("d", "Quit Save {}".format(self._script))
-            
+   
     def saveCode(self):
         with open(self._script_file, "wt") as f:
             f.write(self._script)
@@ -187,13 +182,14 @@ class LiveScripting(Tool):
         Message(text = "Script succesfully Saved : \n %s" % self._script_file, title = catalog.i18nc("@title", "Live Scripting")).show()        
 
     def getScriptFolder(self) -> str:
+        # Logger.log("d", "Script folder {}".format(self._scriptfolder))
         return self._scriptfolder
         
     def getScriptPath(self) -> str:
         return self._path
 
     def setScriptPath(self, value: str) -> None:
-        # Logger.log("w", "The New Script PATH {}".format(value))
+        # Logger.log("d", "The New Script PATH {}".format(value))
         self._path = str(value)
         # self._script_file = self._path 
         with open(self._path, "rt") as f:
