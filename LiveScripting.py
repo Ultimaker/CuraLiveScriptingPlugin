@@ -243,11 +243,11 @@ class LiveScripting(Tool):
     def getAutoRun(self )-> bool:
         return self.__auto_run
 
-    def setAutoRun(self, value: str) -> None:
-        if bool(value) != self.__auto_run:
-            self.__auto_run = bool(value)
-            self.propertyChanged.emit()
-            self._preferences.setValue("LiveScripting/auto_run", self.__auto_run)
+    def setAutoRun(self, value: bool) -> None:
+        # Logger.log("w", "SetAutoRun {}".format(value))
+        self.__auto_run = value
+        self.propertyChanged.emit()
+        self._preferences.setValue("LiveScripting/auto_run", self.__auto_run)
 
     def _backgroundJob(self):
         while self.__trigger:

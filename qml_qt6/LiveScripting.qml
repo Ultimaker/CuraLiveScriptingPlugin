@@ -86,7 +86,7 @@ Item
             fileMode: FileDialog.OpenFile
             nameFilters: "*.py"
             //currentFolder: CuraApplication.getDefaultPath("dialog_load_path")
-			currentFolder: UM.ActiveTool.getProperty("ScriptFolder")
+			currentFolder: UM.ActiveTool.properties.getValue("ScriptFolder")
         
             function urlToStringPath(url)
             {
