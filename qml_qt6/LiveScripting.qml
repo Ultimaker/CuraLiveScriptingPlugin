@@ -11,6 +11,7 @@ import QtQuick 6.0
 import QtQuick.Controls 6.0
 
 import UM 1.6 as UM
+import Cura 1.7 as Cura
 
 Item
 {
@@ -22,23 +23,20 @@ Item
     width: 500
     height: 500
 	
-    TextArea {
+    Cura.ScrollableTextArea {
         id: inputfg
         width: parent.width
-
-		background: Rectangle {
-			border.color: UM.Theme.getColor("border_main")
+		anchors
+		{
+			top: parent.top
+			bottom: runOptions.top
 		}
-	
-        anchors.top: parent.top
-        anchors.bottom: runOptions.top
 
-        font.family: "Courier New"
-        wrapMode: Text.WordWrap 
-		verticalAlignment : Text.AlignTop
-		textFormat : Text.PlainText
-        text: UM.ActiveTool.properties.getValue("Script")
-        onTextChanged: {
+        // font.family: "Courier New"
+        textArea.wrapMode: Text.Wrap 
+		textArea.textFormat : Text.PlainText
+        textArea.text: UM.ActiveTool.properties.getValue("Script")
+        textArea.onTextChanged: {
             UM.ActiveTool.setProperty("Script", text)
         }
         Keys.onPressed: {
@@ -80,21 +78,16 @@ Item
             }
         }
     }
-    TextArea  {
+    Cura.ScrollableTextArea  {
         id: result
         anchors.bottom: parent.bottom
         width: parent.width
         height: 200
 		
-		background: Rectangle {
-			border.color: UM.Theme.getColor("border_main")
-		}
-		
-        readOnly: true
-        wrapMode: Text.WordWrap 
-		verticalAlignment : Text.AlignTop
-		textFormat : Text.PlainText
-        font.family: "Courier New"
-        text: UM.ActiveTool.properties.getValue("Result")
+        textArea.readOnly: true
+        textArea.wrapMode: Text.Wrap 
+		textArea.textFormat : Text.PlainText
+        // textArea.font.family: "Courier New"
+        textArea.text: UM.ActiveTool.properties.getValue("Result")
     }
 }
