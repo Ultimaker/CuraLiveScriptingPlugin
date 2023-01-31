@@ -85,7 +85,8 @@ Item
             // fileUrl QT5 !
             fileMode: FileDialog.OpenFile
             nameFilters: "*.py"
-            currentFolder: CuraApplication.getDefaultPath("dialog_load_path")
+            //currentFolder: CuraApplication.getDefaultPath("dialog_load_path")
+			currentFolder: UM.ActiveTool.getProperty("ScriptFolder")
         
             function urlToStringPath(url)
             {

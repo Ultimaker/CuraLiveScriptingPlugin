@@ -51,6 +51,7 @@ class LiveScripting(Tool):
 
         self.__script = ""
         self.__path = ""
+        self.__scriptfolder = ""
         self.__result = ""
         self.__thread = None
         self.__trigger = False
@@ -68,9 +69,11 @@ class LiveScripting(Tool):
             Logger.log("d", "Live Scriping Plugin File Not Found Error!")
             pass
         
+        self.__scriptfolder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts")
+        
         self._application = CuraApplication.getInstance()
         self._controller = self.getController()
-        self.setExposedProperties("ScriptPath", "Script", "Result", "AutoRun")
+        self.setExposedProperties("ScriptFolder","ScriptPath", "Script", "Result", "AutoRun")
 
         self._preferences = self._application.getPreferences()
         self._preferences.addPreference("LiveScripting/auto_run", False)
@@ -179,6 +182,9 @@ class LiveScripting(Tool):
         
         Message(text = "Script succesfully Saved : \n %s" % self._script_file, title = catalog.i18nc("@title", "Live Scripting")).show()        
 
+    def getScriptFolder(self) -> str:
+        return self.__scriptfolder
+        
     def getScriptPath(self) -> str:
         return self.__path
 
