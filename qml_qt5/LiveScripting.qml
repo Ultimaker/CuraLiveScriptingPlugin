@@ -123,6 +123,7 @@ Item
 			// fileUrl QT5 !
 			onAccepted: UM.ActiveTool.setProperty("ScriptFolder", urlToStringPath(selectedFile))
 			nameFilters: "*.py"
+			selectExisting : false
 			folder:pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))
 			
 			function pathToUrl(path)
