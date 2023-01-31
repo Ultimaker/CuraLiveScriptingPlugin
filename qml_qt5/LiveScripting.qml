@@ -79,9 +79,8 @@ Item
 			id: fileDialog
 			onAccepted: UM.ActiveTool.setProperty("ScriptPath", urlToStringPath(fileUrl))
 			// fileUrl QT5 !
-            fileMode: FileDialog.OpenFile
             nameFilters: "*.py"
-            currentFolder: CuraApplication.getDefaultPath("dialog_load_path")
+            folder: CuraApplication.getDefaultPath("dialog_load_path")
 		
 			function urlToStringPath(url)
 			{
