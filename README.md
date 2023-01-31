@@ -15,6 +15,9 @@ Cura Live scripting Plugin
   
 ## Save
   Save the Script ( Defaut name : live_script.py)
+
+## Save as
+  Save the Script under a choosen name.
   
 ### Default path
   `[Cura configuration folder]/plugins/CuraLiveScripting/plugin_scripts`.
