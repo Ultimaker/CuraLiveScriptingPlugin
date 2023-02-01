@@ -19,6 +19,7 @@ except ImportError:
 	VERSION_QT5 = True
 
 from UM.Tool import Tool
+from UM.Event import Event
 from UM.Logger import Logger
 from UM.Message import Message
 from UM.Scene.Selection import Selection
@@ -131,6 +132,35 @@ class LiveScripting(Tool):
 				if found:
 					return found
 		return None
+
+	def event(self, event: Event) -> bool:
+		result = super().event(event)
+
+		if not self._tool_enabled:
+			return result
+
+		# overridden from ToolHandle.event(), because we also want to show the handle when there is no selection
+		# disabling the tool oon Event.ToolDeactivateEvent is properly handled in ToolHandle.event()
+		if event.type == Event.ToolActivateEvent:
+			if self._handle:
+				self._handle.setParent(self.getController().getScene().getRoot())
+				self._handle.setEnabled(True)
+
+			self._selection_tool = self._controller._selection_tool
+			self._controller.setSelectionTool(None)
+
+			self._application.callLater(lambda: self._forceToolEnabled(passive=True))
+
+		if event.type == Event.ToolDeactivateEvent:
+			self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
+			self._selection_tool = None
+
+			self._application.callLater(lambda: self._forceToolEnabled(passive=True))
+
+		if self._selection_tool:
+			self._selection_tool.event(event)
+
+		return result
 		
 	def _forceToolEnabled(self, passive=False) -> None:
 		if not self._toolbutton_item:
@@ -222,11 +252,6 @@ class LiveScripting(Tool):
 		if self._thread is None:
 			self._thread = threading.Thread(target=self._backgroundJob, daemon=True)
 			self._thread.start()
-
-	def closeWindows(self):
-		if self._controller.getActiveTool() == self:
-			self._controller.setActiveTool(self._getNoneTool())
-		self._forceToolEnabled()
 		
 	def getResult(self) -> str:
 		return self._result
