@@ -3,3 +3,4 @@
 *.pyc
 
 live_script.py
+plugin_scripts/ExportProfiles.py
