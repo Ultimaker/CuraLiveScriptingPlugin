@@ -25,7 +25,8 @@ Item
 		// Convert the path to a usable url
 		var url = "file:///"
 		url = url + path
-		url = encodeURIComponent(url)
+		// Not sure of this last encode
+		// url = encodeURIComponent(url)
 		
 		// Return the resulting url
 		return url
