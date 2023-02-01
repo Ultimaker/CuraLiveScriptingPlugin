@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LiveScripting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-31 15:56+0000\n"
-"PO-Revision-Date: 2023-01-31 16:57+0200\n"
+"POT-Creation-Date: 2023-02-01 08:37+0000\n"
+"PO-Revision-Date: 2023-02-01 09:38+0200\n"
 "Last-Translator: 5axes <5axes@free.fr>\n"
 "Language-Team: 5axes\n"
 "Language: fr\n"
@@ -32,32 +32,32 @@ msgctxt "@label"
 msgid "Scripting Utility"
 msgstr "Utilitaire de script"
 
-#: qml_qt6/LiveScripting.qml:61 qml_qt5/LiveScripting.qml:57
+#: qml_qt6/LiveScripting.qml:81 qml_qt5/LiveScripting.qml:83
 msgctxt "@label"
 msgid "Run"
 msgstr "Exécuter"
 
-#: qml_qt6/LiveScripting.qml:67 qml_qt5/LiveScripting.qml:63
+#: qml_qt6/LiveScripting.qml:87 qml_qt5/LiveScripting.qml:89
 msgctxt "@label"
 msgid "Close"
 msgstr "Fermer"
 
-#: qml_qt6/LiveScripting.qml:73 qml_qt5/LiveScripting.qml:69
+#: qml_qt6/LiveScripting.qml:93 qml_qt5/LiveScripting.qml:95
 msgctxt "@label"
 msgid "Save"
 msgstr "Sauver"
 
-#: qml_qt6/LiveScripting.qml:79 qml_qt5/LiveScripting.qml:75
+#: qml_qt6/LiveScripting.qml:99 qml_qt5/LiveScripting.qml:101
 msgctxt "@label"
 msgid "Open File"
 msgstr "Ouvrir Fichier"
 
-#: qml_qt6/LiveScripting.qml:121 qml_qt5/LiveScripting.qml:116
+#: qml_qt6/LiveScripting.qml:115 qml_qt5/LiveScripting.qml:116
 msgctxt "@label"
 msgid "Save As"
 msgstr "Sauver Sous"
 
-#: qml_qt6/LiveScripting.qml:162 qml_qt5/LiveScripting.qml:156
+#: qml_qt6/LiveScripting.qml:130 qml_qt5/LiveScripting.qml:131
 msgctxt "@option:check"
 msgid "Auto run"
 msgstr "Exécution automatique"
