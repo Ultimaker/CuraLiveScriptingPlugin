@@ -145,5 +145,11 @@ Item
 		textArea.textFormat : Text.PlainText
 		// textArea.font.family: "Courier New"
 		textArea.text: UM.ActiveTool.properties.getValue("Result")
+		Keys.onPressed: {
+			if (event.key == Qt.Key_Delete) {
+				UM.ActiveTool.setProperty("Result", "");
+				event.accepted = true;
+			}
+		}
 	}
 }
