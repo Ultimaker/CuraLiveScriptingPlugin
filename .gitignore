@@ -1,3 +1,9 @@
 
 *.qmlc
 *.pyc
+
+*live_script.py
+./plugin_scripts/live_script.py
+./plugin_scripts/ExportProfiles.py
+plugin_scripts/ExportProfiles.py
+plugin_scripts/live_script.py
