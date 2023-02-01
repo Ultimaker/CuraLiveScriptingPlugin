@@ -1,6 +1,6 @@
 {
     "name": "Live Scripting Tool",
-    "author": "5@xes",
+    "author": "Daid (Ultimaker) / 5@xes",
     "version": "2.0.1",
     "description": "Provides an edit window for direct script editing.",
     "api": 7,
