@@ -86,9 +86,23 @@ class LiveScripting(Tool):
 		Selection.selectionChanged.connect(self._onSelectionChanged)
 		self._controller.activeStageChanged.connect(self._onActiveStageChanged)
 		self._controller.activeToolChanged.connect(self._onActiveToolChanged)
+
+		# self._application.fileLoaded.connect(self._onFileLoaded)
+		self._application.fileCompleted.connect(self._onFileCompleted)
+
 		
 		self._selection_tool = None  # type: Optional[Tool]
-	
+
+	def _onFileLoaded(self) -> None:
+		# Logger.log("d", "_onFileLoaded")
+		if self._auto_run:
+			self.runScript()
+
+	def _onFileCompleted(self) -> None:
+		if self._auto_run:
+            Logger.log("d", "RunScript onFileCompleted")
+			self.runScript()
+            
 	# -------------------------------------------------------------------------------------------------------------
 	# Origin of this code for forceToolEnabled Copyright (c) 2022 Aldo Hoeben / fieldOfView ( Source MeasureTool )
 	# def _onSelectionChanged
@@ -214,8 +228,8 @@ class LiveScripting(Tool):
 			self._script = str(value)
 			self.propertyChanged.emit()
 			
-			if self._auto_run:
-				self.runScript()
+		# 	if self._auto_run:
+		# 		self.runScript()
 
 	def runScript(self):
 		self._trigger = True
