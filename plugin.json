@@ -1,8 +1,9 @@
 {
-    "name": "Live scripting tool",
-    "author": "Daid",
-    "version": "1.0.0",
+    "name": "Live Scripting Tool",
+    "author": "5@xes",
+    "version": "2.0.1",
     "description": "Provides an edit window for direct script editing.",
-    "i18n-catalog": "uranium",
-    "supported_sdk_versions": ["7.0.0"]
+    "api": 7,
+    "supported_sdk_versions": ["7.9.0", "8.0.0", "8.1.0", "8.2.0"],
+    "i18n-catalog": "livescripting"
 }
