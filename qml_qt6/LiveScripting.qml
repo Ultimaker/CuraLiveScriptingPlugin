@@ -19,7 +19,33 @@ import Cura 1.7 as Cura
 Item
 {
 	id: base
+
+	function pathToUrl(path)
+	{
+		// Convert the path to a usable url
+		var url = "file:///"
+		url = url + path
+		url = encodeURIComponent(url)
+		
+		// Return the resulting url
+		return url
+	}
 	
+	function urlToStringPath(url)
+	{
+		// Convert the url to a usable string path
+		var path = url.toString()
+		path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
+		path = decodeURIComponent(path)
+
+		// On Linux, a forward slash needs to be prepended to the resulting path
+		// I'm guessing this is needed on Mac OS, as well, but can't test it
+		if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
+		
+		// Return the resulting path
+		return path
+	}
+			
 	property variant catalog: UM.I18nCatalog { name: "livescripting" }
 	
 	// TODO: these widths & heights are a bit too dependant on other objects in the qml...
@@ -41,12 +67,6 @@ Item
 		textArea.text: UM.ActiveTool.properties.getValue("Script")
 		textArea.onTextChanged: {
 			UM.ActiveTool.setProperty("Script", textArea.text)
-		}
-		Keys.onPressed: {
-			if (event.key == Qt.Key_Tab) {
-				insert(cursorPosition, "	");
-				event.accepted = true;
-			}
 		}
 	}
 	Row {
@@ -89,32 +109,6 @@ Item
 			nameFilters: "*.py"
 			// currentFolder: CuraApplication.getDefaultPath("dialog_load_path")
 			currentFolder:pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))
-			
-			function pathToUrl(path)
-			{
-				// Convert the path to a usable url
-				var url = "file:///"
-				url = url + path
-				url = encodeURIComponent(url)
-				
-				// Return the resulting url
-				return url
-			}
-			
-			function urlToStringPath(url)
-			{
-				// Convert the url to a usable string path
-				var path = url.toString()
-				path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
-				path = decodeURIComponent(path)
-
-				// On Linux, a forward slash needs to be prepended to the resulting path
-				// I'm guessing this is needed on Mac OS, as well, but can't test it
-				if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
-				
-				// Return the resulting path
-				return path
-			}
 		}
 
 		Button {
@@ -130,32 +124,6 @@ Item
 			fileMode: FileDialog.SaveFile
 			nameFilters: "*.py"
 			currentFolder:pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))
-			
-			function pathToUrl(path)
-			{
-				// Convert the path to a usable url
-				var url = "file:///"
-				url = url + path
-				url = encodeURIComponent(url)
-				
-				// Return the resulting url
-				return url
-			}
-			
-			function urlToStringPath(url)
-			{
-				// Convert the url to a usable string path
-				var path = url.toString()
-				path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
-				path = decodeURIComponent(path)
-
-				// On Linux, a forward slash needs to be prepended to the resulting path
-				// I'm guessing this is needed on Mac OS, as well, but can't test it
-				if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
-				
-				// Return the resulting path
-				return path
-			}
 		}
 		
 		UM.CheckBox {

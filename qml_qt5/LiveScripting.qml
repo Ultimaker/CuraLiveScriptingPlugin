@@ -18,7 +18,33 @@ import Cura 1.0 as Cura
 Item
 {
 	id: base
+
+	function pathToUrl(path)
+	{
+		// Convert the path to a usable url
+		var url = "file:///"
+		url = url + path
+		url = encodeURIComponent(url)
+		
+		// Return the resulting url
+		return url
+	}
 	
+	function urlToStringPath(url)
+	{
+		// Convert the url to a usable string path
+		var path = url.toString()
+		path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
+		path = decodeURIComponent(path)
+
+		// On Linux, a forward slash needs to be prepended to the resulting path
+		// I'm guessing this is needed on Mac OS, as well, but can't test it
+		if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
+		
+		// Return the resulting path
+		return path
+	}
+			
 	property variant catalog: UM.I18nCatalog { name: "livescripting" }
 	
 	
@@ -84,32 +110,6 @@ Item
 			nameFilters: "*.py"
 			// folder: CuraApplication.getDefaultPath("dialog_load_path")
 			folder: pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))
-			
-			function pathToUrl(path)
-			{
-				// Convert the path to a usable url
-				var url = "file:///"
-				url = url + path
-				url = encodeURIComponent(url)
-				
-				// Return the resulting url
-				return url
-			}
-			
-			function urlToStringPath(url)
-			{
-				// Convert the url to a usable string path
-				var path = url.toString()
-				path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
-				path = decodeURIComponent(path)
-
-				// On Linux, a forward slash needs to be prepended to the resulting path
-				// I'm guessing this is needed on Mac OS, as well, but can't test it
-				if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
-				
-				// Return the resulting path
-				return path
-			}
 		}
 
 		Button {
@@ -124,33 +124,7 @@ Item
 			onAccepted: UM.ActiveTool.setProperty("ScriptFolder", urlToStringPath(selectedFile))
 			nameFilters: "*.py"
 			selectExisting : false
-			folder:pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))
-			
-			function pathToUrl(path)
-			{
-				// Convert the path to a usable url
-				var url = "file:///"
-				url = url + path
-				url = encodeURIComponent(url)
-				
-				// Return the resulting url
-				return url
-			}
-			
-			function urlToStringPath(url)
-			{
-				// Convert the url to a usable string path
-				var path = url.toString()
-				path = path.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "")
-				path = decodeURIComponent(path)
-
-				// On Linux, a forward slash needs to be prepended to the resulting path
-				// I'm guessing this is needed on Mac OS, as well, but can't test it
-				if (Cura.os == "linux" || Cura.os == "darwin") path = "/" + path
-				
-				// Return the resulting path
-				return path
-			}
+			folder:pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))		
 		}
 		
 		CheckBox {
