@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LiveScripting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-01 13:05+0000\n"
-"PO-Revision-Date: 2023-02-01 14:24+0200\n"
+"POT-Creation-Date: 2023-02-02 08:53+0000\n"
+"PO-Revision-Date: 2023-02-02 10:32+0200\n"
 "Last-Translator: 5axes <5axes@free.fr>\n"
 "Language-Team: 5axes\n"
 "Language: fr\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Virtaal 0.7.1\n"
 
-#: LiveScripting.py:123 __init__.py:24
+#: LiveScripting.py:138 __init__.py:24
 msgctxt "@label"
 msgid "LiveScripting"
 msgstr "LiveScripting"
 
-#: LiveScripting.py:182 LiveScripting.py:192
+#: LiveScripting.py:225 LiveScripting.py:235
 msgctxt "@title"
 msgid "Live Scripting"
 msgstr "Script en direct"
@@ -32,32 +32,31 @@ msgctxt "@label"
 msgid "Scripting Utility"
 msgstr "Utilitaire de script"
 
-#: qml_qt6/LiveScripting.qml:81 qml_qt5/LiveScripting.qml:83
+#: qml_qt6/LiveScripting.qml:82 qml_qt5/LiveScripting.qml:84
 msgctxt "@label"
 msgid "Run"
 msgstr "Exécuter"
 
-#: qml_qt6/LiveScripting.qml:87 qml_qt5/LiveScripting.qml:89
-msgctxt "@label"
-msgid "Close"
-msgstr "Fermer"
-
-#: qml_qt6/LiveScripting.qml:93 qml_qt5/LiveScripting.qml:95
+#: qml_qt6/LiveScripting.qml:88 qml_qt5/LiveScripting.qml:90
 msgctxt "@label"
 msgid "Save"
 msgstr "Sauver"
 
-#: qml_qt6/LiveScripting.qml:99 qml_qt5/LiveScripting.qml:101
+#: qml_qt6/LiveScripting.qml:94 qml_qt5/LiveScripting.qml:96
 msgctxt "@label"
 msgid "Open File"
 msgstr "Ouvrir Fichier"
 
-#: qml_qt6/LiveScripting.qml:115 qml_qt5/LiveScripting.qml:116
+#: qml_qt6/LiveScripting.qml:110 qml_qt5/LiveScripting.qml:111
 msgctxt "@label"
 msgid "Save As"
 msgstr "Sauver Sous"
 
-#: qml_qt6/LiveScripting.qml:130 qml_qt5/LiveScripting.qml:131
+#: qml_qt6/LiveScripting.qml:125 qml_qt5/LiveScripting.qml:126
 msgctxt "@option:check"
 msgid "Auto run"
 msgstr "Exécution automatique"
+
+#~ msgctxt "@label"
+#~ msgid "Close"
+#~ msgstr "Fermer"
