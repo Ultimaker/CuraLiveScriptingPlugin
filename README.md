@@ -10,8 +10,6 @@ Cura Live scripting Plugin
 ### Auto run
   Auto execute the Script.
 
-## Close
-  Close The Windows open on a Force Mode.
   
 ## Save
   Save the Script ( Defaut name : live_script.py).
@@ -32,5 +30,10 @@ This menu opens the following folder:
 ## Open File
 
 Open an existing script File.
+
+
+## Closing the Windows
+ 
+Clic again on the Tool Icon to close the plugin Windows. The use of this function is only useful in the case where the selection of another tool is not yet possible (no part to select for example).
 
 

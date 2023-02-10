@@ -19,6 +19,7 @@ except ImportError:
 	VERSION_QT5 = True
 
 from UM.Tool import Tool
+from UM.Event import Event
 from UM.Logger import Logger
 from UM.Message import Message
 from UM.Scene.Selection import Selection
@@ -86,9 +87,23 @@ class LiveScripting(Tool):
 		Selection.selectionChanged.connect(self._onSelectionChanged)
 		self._controller.activeStageChanged.connect(self._onActiveStageChanged)
 		self._controller.activeToolChanged.connect(self._onActiveToolChanged)
+
+		# self._application.fileLoaded.connect(self._onFileLoaded)
+		self._application.fileCompleted.connect(self._onFileCompleted)
+
 		
 		self._selection_tool = None  # type: Optional[Tool]
-	
+
+	def _onFileLoaded(self) -> None:
+		# Logger.log("d", "_onFileLoaded")
+		if self._auto_run:
+			self.runScript()
+
+	def _onFileCompleted(self) -> None:
+		if self._auto_run:
+			Logger.log("d", "RunScript onFileCompleted")
+			self.runScript()
+
 	# -------------------------------------------------------------------------------------------------------------
 	# Origin of this code for forceToolEnabled Copyright (c) 2022 Aldo Hoeben / fieldOfView ( Source MeasureTool )
 	# def _onSelectionChanged
@@ -160,6 +175,34 @@ class LiveScripting(Tool):
 		self._toolbutton_item = self._findToolbarIcon(main_window.contentItem())
 		self._forceToolEnabled()
 
+	def event(self, event: Event) -> bool:
+		result = super().event(event)
+
+		if not self._tool_enabled:
+			return result
+
+		# overridden from ToolHandle.event(), because we also want to show the handle when there is no selection
+		# disabling the tool oon Event.ToolDeactivateEvent is properly handled in ToolHandle.event()
+		if event.type == Event.ToolActivateEvent:
+			if self._handle:
+				self._handle.setParent(self.getController().getScene().getRoot())
+				self._handle.setEnabled(True)
+
+			self._selection_tool = self._controller._selection_tool
+			self._controller.setSelectionTool(None)
+
+			self._application.callLater(lambda: self._forceToolEnabled(passive=True))
+
+		if event.type == Event.ToolDeactivateEvent:
+			self._controller.setSelectionTool(self._selection_tool or "SelectionTool")
+			self._selection_tool = None
+
+			self._application.callLater(lambda: self._forceToolEnabled(passive=True))
+
+		if self._selection_tool:
+			self._selection_tool.event(event)
+
+		return result
 	# -------------------------------------------------------------------------------------------------------------
 	def _onExitCallback(self)->None:
 		''' Called as Cura is closing to ensure that script were saved before exiting '''
@@ -213,20 +256,15 @@ class LiveScripting(Tool):
 		if str(value) != str(self._script):
 			self._script = str(value)
 			self.propertyChanged.emit()
-			
-			if self._auto_run:
-				self.runScript()
+		#   Remove _auto_run on modification of script text	
+		# 	if self._auto_run:
+		# 		self.runScript()
 
 	def runScript(self):
 		self._trigger = True
 		if self._thread is None:
 			self._thread = threading.Thread(target=self._backgroundJob, daemon=True)
 			self._thread.start()
-
-	def closeWindows(self):
-		if self._controller.getActiveTool() == self:
-			self._controller.setActiveTool(self._getNoneTool())
-		self._forceToolEnabled()
 		
 	def getResult(self) -> str:
 		return self._result

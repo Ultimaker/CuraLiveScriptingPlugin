@@ -85,12 +85,6 @@ Item
 			}
 		}
 		Button {
-			text: catalog.i18nc("@label","Close")
-			onClicked: {
-				UM.ActiveTool.triggerAction("closeWindows")
-			}
-		}
-		Button {
 			text: catalog.i18nc("@label","Save")
 			onClicked: {
 				UM.ActiveTool.triggerAction("saveCode")
