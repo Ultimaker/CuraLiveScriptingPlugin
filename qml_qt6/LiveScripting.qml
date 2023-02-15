@@ -71,12 +71,21 @@ Item
 			UM.ActiveTool.setProperty("Script", textArea.text)
 		}
 	}
+	
 	Row {
 		id: runOptions
 		width: childrenRect.width
 		height: childrenRect.height
-		anchors.bottom: result.top
-
+		
+		spacing: UM.Theme.getSize("default_margin").height
+		
+		anchors
+		{
+			bottom: result.top
+			topMargin: UM.Theme.getSize("default_margin").height
+			bottomMargin: UM.Theme.getSize("default_margin").height
+		}
+		
 		Cura.PrimaryButton {
 			id: runButton
 			spacing: UM.Theme.getSize("default_margin").height
