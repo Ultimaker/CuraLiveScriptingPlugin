@@ -60,6 +60,7 @@ Item
 		{
 			top: parent.top
 			bottom: runOptions.top
+			bottomMargin: UM.Theme.getSize("default_margin").height
 		}
 
 		// font.family: "Courier New"
@@ -75,22 +76,29 @@ Item
 		width: childrenRect.width
 		height: childrenRect.height
 		anchors.bottom: result.top
-		
-		spacing: Math.round(UM.Theme.getSize("default_margin").width / 2)
 
-		Button {
+		Cura.PrimaryButton {
+			id: runButton
+			spacing: UM.Theme.getSize("default_margin").height
+			height: UM.Theme.getSize("setting_control").height
 			text: catalog.i18nc("@label","Run")
 			onClicked: {
 				UM.ActiveTool.triggerAction("runScript")
 			}
 		}
-		Button {
+		Cura.PrimaryButton {
+			id: saveButton
+			spacing: UM.Theme.getSize("default_margin").height
+			height: UM.Theme.getSize("setting_control").height			
 			text: catalog.i18nc("@label","Save")
 			onClicked: {
 				UM.ActiveTool.triggerAction("saveCode")
 			}
 		}
-		Button {
+		Cura.PrimaryButton {
+			id: openfileButton
+			spacing: UM.Theme.getSize("default_margin").height
+			height: UM.Theme.getSize("setting_control").height			
 			text: catalog.i18nc("@label","Open File")
 			onClicked: fileDialog.open()
 		}
@@ -106,7 +114,10 @@ Item
 			currentFolder:pathToUrl(UM.ActiveTool.properties.getValue("ScriptFolder"))
 		}
 
-		Button {
+		Cura.PrimaryButton {
+			id: saveasButton
+			spacing: UM.Theme.getSize("default_margin").height
+			height: UM.Theme.getSize("setting_control").height			
 			text: catalog.i18nc("@label","Save As")
 			onClicked: fileDialogSave.open()
 		}
@@ -122,6 +133,7 @@ Item
 		}
 		
 		UM.CheckBox {
+			id: autorunCheck
 			text: catalog.i18nc("@option:check","Auto run")
 			checked: UM.ActiveTool.properties.getValue("AutoRun")
 			onClicked: {
@@ -131,7 +143,12 @@ Item
 	}
 	Cura.ScrollableTextArea  {
 		id: result
-		anchors.bottom: parent.bottom
+		anchors
+		{
+			bottom: parent.bottom
+			topMargin: UM.Theme.getSize("default_margin").height
+		}		
+
 		width: parent.width
 		height: 150
 		
