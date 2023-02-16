@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the LiveScripting package.
+# 5axes <5axes@free.fr>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: LiveScripting\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-02 08:53+0000\n"
+"PO-Revision-Date: 2023-02-02 10:32+0200\n"
+"Last-Translator: 5axes <5axes@free.fr>\n"
+"Language-Team: 5axes\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#: LiveScripting.py:138 __init__.py:24
+msgctxt "@label"
+msgid "LiveScripting"
+msgstr "LiveScripting"
+
+#: LiveScripting.py:225 LiveScripting.py:235
+msgctxt "@title"
+msgid "Live Scripting"
+msgstr "Script en direct"
+
+#: __init__.py:25
+msgctxt "@label"
+msgid "Scripting Utility"
+msgstr "Utilitaire de script"
+
+#: qml_qt6/LiveScripting.qml:82 qml_qt5/LiveScripting.qml:84
+msgctxt "@label"
+msgid "Run"
+msgstr "Exécuter"
+
+#: qml_qt6/LiveScripting.qml:88 qml_qt5/LiveScripting.qml:90
+msgctxt "@label"
+msgid "Save"
+msgstr "Sauver"
+
+#: qml_qt6/LiveScripting.qml:94 qml_qt5/LiveScripting.qml:96
+msgctxt "@label"
+msgid "Open File"
+msgstr "Ouvrir Fichier"
+
+#: qml_qt6/LiveScripting.qml:110 qml_qt5/LiveScripting.qml:111
+msgctxt "@label"
+msgid "Save As"
+msgstr "Sauver Sous"
+
+#: qml_qt6/LiveScripting.qml:125 qml_qt5/LiveScripting.qml:126
+msgctxt "@option:check"
+msgid "Auto run"
+msgstr "Exécution automatique"
+
+#~ msgctxt "@label"
+#~ msgid "Close"
+#~ msgstr "Fermer"

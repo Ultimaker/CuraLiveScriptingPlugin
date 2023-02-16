@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the LiveScripting package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: LiveScripting\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-16 11:22+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: LiveScripting.py:140 __init__.py:24
+msgctxt "@label"
+msgid "LiveScripting"
+msgstr ""
+
+#: LiveScripting.py:227 LiveScripting.py:237
+msgctxt "@title"
+msgid "Live Scripting"
+msgstr ""
+
+#: __init__.py:25
+msgctxt "@label"
+msgid "Scripting Utility"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:93 qml_qt5/LiveScripting.qml:84
+msgctxt "@label"
+msgid "Run"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:102 qml_qt5/LiveScripting.qml:90
+msgctxt "@label"
+msgid "Save"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:111 qml_qt5/LiveScripting.qml:96
+msgctxt "@label"
+msgid "Open File"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:130 qml_qt5/LiveScripting.qml:111
+msgctxt "@label"
+msgid "Save As"
+msgstr ""
+
+#: qml_qt6/LiveScripting.qml:146 qml_qt5/LiveScripting.qml:126
+msgctxt "@option:check"
+msgid "Auto run"
+msgstr ""
