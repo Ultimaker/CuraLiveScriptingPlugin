@@ -1,156 +1,68 @@
-#-------------------------------------------------------------------------------------------
-# Copyright (c) 2023 5@xes
 # 
-# ExportProfiles 
+# Get info on Modified parameter by the user
+# V1.0.0 15/02/2023
+# 5@xes
 #
-#-------------------------------------------------------------------------------------------
 
-import os
-import platform
-import os.path
-import sys
-import re
+import configparser  # The script lists are stored in metadata as serialised config files.
+import io  # To allow configparser to write to a string.
 
-from datetime import datetime
-from cura.CuraApplication import CuraApplication
-from cura.CuraVersion import CuraVersion  # type: ignore
-from UM.Version import Version
-
-# Python csv  : https://docs.python.org/fr/2/library/csv.html
-#               https://docs.python.org/3/library/csv.html
-# Code from Aldo Hoeben / fieldOfView for this tips
-import csv
-
-from UM.Application import Application
-from UM.Logger import Logger
 from UM.Message import Message
+from UM.Settings.SettingInstance import SettingInstance
+from cura.CuraApplication import CuraApplication
+from UM.Settings.SettingInstance import SettingInstance
+from UM.Resources import Resources
+from UM.Settings.ContainerRegistry import ContainerRegistry
+from UM.i18n import i18nCatalog
 
-def _WriteRow(csvwriter,Section,Extrud,Key,KType,ValStr):
-    
-    csvwriter.writerow([
-                 Section,
-                 "%d" % Extrud,
-                 Key,
-                 KType,
-                 str(ValStr)
-            ])
+i18n_catalog = i18nCatalog("fdmprinter.def.json")
 
-def exportData(file_name) -> None:     
-    machine_manager = CuraApplication.getInstance().getMachineManager()        
-    stack = CuraApplication.getInstance().getGlobalContainerStack()
-
-    global_stack = machine_manager.activeMachine
-
-    # Get extruder count
-    extruder_count=stack.getProperty("machine_extruder_count", "value")
-    
-    exported_count = 0
+def safeCall(callable):
     try:
-        with open(file_name, 'w', newline='') as csv_file:
-            # csv.QUOTE_MINIMAL  or csv.QUOTE_NONNUMERIC ?
-            csv_writer = csv.writer(csv_file, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            # E_dialect = csv.get_dialect("excel")
-            # csv_writer = csv.writer(csv_file, dialect=E_dialect)
-            
-            csv_writer.writerow([
-                "Section",
-                "Extruder",
-                "Key",
-                "Type",
-                "Value"
-            ])
-             
-            # Date
-            _WriteRow(csv_writer,"general",0,"Date","str",datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-            # Platform
-            _WriteRow(csv_writer,"general",0,"Os","str",str(platform.system()) + " " + str(platform.version())) 
-            # Version  
-            _WriteRow(csv_writer,"general",0,"Cura_Version","str",CuraVersion)
-            # Profile
-            P_Name = global_stack.qualityChanges.getMetaData().get("name", "")
-            _WriteRow(csv_writer,"general",0,"Profile","str",P_Name)
-            # Quality
-            Q_Name = global_stack.quality.getMetaData().get("name", "")
-            _WriteRow(csv_writer,"general",0,"Quality","str",Q_Name)
-            # Extruder_Count
-            _WriteRow(csv_writer,"general",0,"Extruder_Count","int",str(extruder_count))
-            
-            # Material
-            # extruders = list(global_stack.extruders.values())  
-            extruder_stack = CuraApplication.getInstance().getExtruderManager().getActiveExtruderStacks()
+        result = callable()
+        return result
+    except Exception as ex:
+        return ex
 
-            # Define every section to get the same order as in the Cura Interface
-            # Modification from global_stack to extruders[0]
-            i=0
+global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
 
-            for Extrud in extruder_stack:    
-                i += 1                        
-                _doTree(Extrud,"resolution","resolution",csv_writer,0,i)
-                # Shell before 4.9 and now Walls
-                _doTree(Extrud,"shell","shell",csv_writer,0,i)
-                # New section From 4.10 
-                _doTree(Extrud,"top_bottom","top_bottom",csv_writer,0,i)
-                _doTree(Extrud,"infill","infill",csv_writer,0,i)
-                _doTree(Extrud,"material","material",csv_writer,0,i)
-                _doTree(Extrud,"speed","speed",csv_writer,0,i)
-                _doTree(Extrud,"travel","travel",csv_writer,0,i)
-                _doTree(Extrud,"cooling","cooling",csv_writer,0,i)
-                # If single extruder doesn't export the data
-                if extruder_count>1 :
-                    _doTree(Extrud,"dual","dual",csv_writer,0,i)
-                    
-                _doTree(Extrud,"support","support",csv_writer,0,i)
-                _doTree(Extrud,"platform_adhesion","platform_adhesion",csv_writer,0,i)                   
-                _doTree(Extrud,"meshfix","meshfix",csv_writer,0,i)             
-                _doTree(Extrud,"blackmagic","blackmagic",csv_writer,0,i)
-                _doTree(Extrud,"experimental","experimental",csv_writer,0,i)
-                
-                # machine_settings
-                # _doTree(Extrud,"machine_settings","machine_settings",csv_writer,0,i)
-                
-    except:
-        Logger.logException("e", "Could not export profile to the selected file")
-        return
+machine_manager = CuraApplication.getInstance().getMachineManager()
+global_stack = machine_manager.activeMachine
+machine_id=global_stack.quality.getMetaDataEntry('definition')
 
-    Message().hide()
-    Message("Exported data for profil %s" % P_Name, title = "Import Export CSV Profiles Tools").show()
-           
-def _doTree(stack,section,key,csvwriter,depth,extrud):   
-    #output node     
-    Pos=0
-             
-    if stack.getProperty(key,"type") == "category":
-        section=key
-    else:
-        if stack.getProperty(key,"enabled") == True:
-            GetType=stack.getProperty(key,"type")
-            GetVal=stack.getProperty(key,"value")
-            
-            if str(GetType)=='float':
-                GelValStr="{:.4f}".format(GetVal).rstrip("0").rstrip(".") # Formatage
-            else:
-                # enum = Option list
-                if str(GetType)=='enum':
-                    definition_option=key + " option " + str(GetVal)
-                    get_option=str(GetVal)
-                    GetOption=stack.getProperty(key,"options")
-                    GetOptionDetail=GetOption[get_option]
-                    GelValStr=str(GetVal)
-                else:
-                    GelValStr=str(GetVal)
-      
-            _WriteRow(csvwriter,section,extrud,key,str(GetType),GelValStr)        
-            depth += 1
-            
-    #look for children
-    child = CuraApplication.getInstance().getGlobalContainerStack().getSettingDefinition(key).children 
-    if len(child) > 0:
-        for _child in child:    
-            _doTree(stack,section,_child.key,csvwriter,depth,extrud)       
-            
-"""
-Export the profile to the file  "TEST.CSV"
-"""
-FileExport = "C:\TEMP\TEST.CSV"
-exportData(FileExport)
+#containers = global_container_stack.getContainers()
+nb=0
+for extruder in global_container_stack.extruderList :
+    containers = extruder.getContainers()
+    _Texte = ""
+    nb+=1
+    for container in containers:
+        # print("Containers : {}".format(container))
+        type=container.getMetaDataEntry('type')
+        if type=='user':
+            print("Containers : {}".format(safeCall(container.getName)))
+            keys = list(container.getAllKeys())
+            for key in keys:
+                print("key : {}".format(key))
+                definition_key=key + " label"
+                untranslated_label=global_stack.getProperty(key,"label")
+                translated_label=i18n_catalog.i18nc(definition_key, untranslated_label)
+                _Texte += "\n"                 
+                _Texte += translated_label
+    Message(text = "Extruder modification {} : {}".format(nb,_Texte)).show()
+
+for container in global_container_stack.getContainers():
+    _Texte = ""
+    type=container.getMetaDataEntry('type')
+    if type=='user':
+        print("Containers : {}".format(safeCall(container.getName)))
+        keys = list(container.getAllKeys())
+        for key in keys:
+            print("key : {}".format(key))
+            definition_key=key + " label"
+            untranslated_label=global_stack.getProperty(key,"label")
+            translated_label=i18n_catalog.i18nc(definition_key, untranslated_label)
+            _Texte += "\n"           
+            _Texte += translated_label
+        Message(text = "Global_container modification : {}".format(_Texte)).show()                
 
